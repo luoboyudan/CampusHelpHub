@@ -1,0 +1,13 @@
+wechat:
+  appid: "your_appid"
+  secret: "your_secret"
+  code2sessionURL: "https://api.weixin.qq.com/sns/jscode2session"
+database:
+  hosyt: "localhost"
+  port: 3306
+  user: "root"
+  password: "root"
+  dbname: "campushelphub"
+server:
+  addr: ":8080"
+machineID: 0
