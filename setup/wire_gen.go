@@ -12,6 +12,7 @@ import (
 	"campushelphub/api/handlerset"
 	common2 "campushelphub/internal/common"
 	"campushelphub/internal/config"
+	"campushelphub/internal/errors"
 	"campushelphub/internal/repository"
 	"campushelphub/internal/service"
 	"github.com/google/wire"
@@ -26,7 +27,9 @@ func InitializeApp() *App {
 	userRepository := repository.NewMySQLUserRepository(db)
 	iDgenarator := common2.NewSnowflakeIDGenerator(configConfig)
 	userService := service.NewUserService(userRepository, iDgenarator)
-	userHandler := frontend.NewUserHandler(handler, userService)
+	errorsError := errors.NewError()
+	wechatService := service.NewWechatService(configConfig, errorsError)
+	userHandler := frontend.NewUserHandler(handler, userService, wechatService)
 	handlerSet := handlerset.NewHandlerSet(userHandler)
 	engine := NewEngine(handlerSet)
 	app := NewApp(engine, configConfig, db)
@@ -34,6 +37,8 @@ func InitializeApp() *App {
 }
 
 // wire.go:
+
+var ErrorSet = wire.NewSet(errors.NewError)
 
 var ConfigSet = wire.NewSet(config.NewConfig)
 
@@ -46,6 +51,8 @@ var ServiceSet = wire.NewSet(service.NewUserService)
 var BaseHandlerSet = wire.NewSet(common.NewHandler)
 
 var HandlerSet = wire.NewSet(handlerset.NewHandlerSet)
+
+var WechatServiceSet = wire.NewSet(service.NewWechatService)
 
 var FrontendHandlerSet = wire.NewSet(frontend.NewUserHandler)
 

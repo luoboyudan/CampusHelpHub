@@ -9,10 +9,15 @@ import (
 	"campushelphub/api/handlerset"
 	serviceCommon "campushelphub/internal/common"
 	"campushelphub/internal/config"
+	"campushelphub/internal/errors"
 	"campushelphub/internal/repository"
 	"campushelphub/internal/service"
 
 	"github.com/google/wire"
+)
+
+var ErrorSet = wire.NewSet(
+	errors.NewError,
 )
 
 var ConfigSet = wire.NewSet(
@@ -38,6 +43,9 @@ var BaseHandlerSet = wire.NewSet(
 var HandlerSet = wire.NewSet(
 	handlerset.NewHandlerSet,
 )
+var WechatServiceSet = wire.NewSet(
+	service.NewWechatService,
+)
 
 var FrontendHandlerSet = wire.NewSet(
 	frontend.NewUserHandler,
@@ -57,6 +65,7 @@ var IDGenSet = wire.NewSet(
 
 func InitializeApp() *App {
 	wire.Build(
+		ErrorSet,
 		ConfigSet,
 		DBSet,
 		RepositorySet,
@@ -64,6 +73,7 @@ func InitializeApp() *App {
 		BaseHandlerSet,
 		FrontendHandlerSet,
 		HandlerSet,
+		WechatServiceSet,
 		EngineSet,
 		AppSet,
 		IDGenSet,

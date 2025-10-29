@@ -9,7 +9,7 @@ import (
 type Config struct {
 	Wechat struct {
 		AppID           string `yaml:"appid"`
-		Secret          string `yaml:"secret"`
+		AppSecret       string `yaml:"appsecret"`
 		Code2SessionURL string `yaml:"code2sessionURL"`
 	} `yaml:"wechat"`
 	Database struct {

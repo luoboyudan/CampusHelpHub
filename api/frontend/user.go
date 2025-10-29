@@ -10,13 +10,15 @@ import (
 
 type UserHandler struct {
 	*common.Handler
-	UserService *service.UserService
+	UserService   *service.UserService
+	WechatService *service.WechatService
 }
 
-func NewUserHandler(h *common.Handler, us *service.UserService) *UserHandler {
+func NewUserHandler(h *common.Handler, us *service.UserService, ws *service.WechatService) *UserHandler {
 	return &UserHandler{
-		Handler:     h,
-		UserService: us,
+		Handler:       h,
+		UserService:   us,
+		WechatService: ws,
 	}
 }
 
@@ -25,7 +27,13 @@ func (h *UserHandler) CreateUser(ctx *gin.Context) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		return
 	}
-	if err := h.UserService.Create(ctx, &req); err != nil {
+	sessionResp, err := h.WechatService.Login(req.Code)
+	if err != nil {
+		h.ErrorResponse(ctx, err.GetHTTPStatus(), err.Msg, err.Detail)
+		return
+	}
+	if err = h.UserService.Create(ctx, &req, sessionResp); err != nil {
+		h.ErrorResponse(ctx, err.GetHTTPStatus(), err.Msg, err.Detail)
 		return
 	}
 }

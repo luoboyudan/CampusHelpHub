@@ -2,14 +2,16 @@ package service
 
 import (
 	"campushelphub/internal/common"
+	"campushelphub/internal/errors"
 	"campushelphub/internal/repository"
-	"campushelphub/internal/service/wechat"
 	"campushelphub/model"
 	"context"
+	"net/http"
 )
 
 type UserService struct {
 	userRepo repository.UserRepository
+	errs     *errors.Error
 	IDGen    common.IDgenarator
 }
 
@@ -17,18 +19,18 @@ func NewUserService(userRepo repository.UserRepository, idGen common.IDgenarator
 	return &UserService{userRepo: userRepo, IDGen: idGen}
 }
 
-func (s *UserService) Create(ctx context.Context, req *model.CreateUserRequest) error {
-	openID, err := wechat.Login(req.Code)
-	if err != nil {
-		return err
-	}
+func (s *UserService) Create(ctx context.Context, req *model.CreateUserRequest, sessionResp *model.SessionResponse) *errors.Error {
 	user := &model.User{
 		ID:       s.IDGen.GenerateID(),
-		OpenID:   openID.OpenID,
+		OpenID:   sessionResp.OpenID,
 		Username: req.Username,
 		Avatar:   req.Avatar,
 		Bio:      req.Bio,
 		School:   req.School,
 	}
-	return s.userRepo.Create(ctx, user)
+	err := s.userRepo.Create(ctx, user)
+	if err != nil {
+		return s.errs.NewError("创建用户失败", err.Error(), http.StatusInternalServerError, err)
+	}
+	return nil
 }
