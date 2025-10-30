@@ -2,6 +2,7 @@ package repository
 
 import (
 	"campushelphub/internal/config"
+	"campushelphub/model"
 	"strconv"
 
 	"gorm.io/driver/mysql"
@@ -14,5 +15,6 @@ func NewDB(cfg *config.Config) *gorm.DB {
 	if err != nil {
 		panic("failed to connect database")
 	}
+	db.AutoMigrate(&model.User{}, &model.Order{}, &model.Location{})
 	return db
 }

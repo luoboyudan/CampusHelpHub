@@ -20,3 +20,7 @@ func NewApp(engine *gin.Engine, cfg *config.Config, db *gorm.DB) *App {
 		DB:     db,
 	}
 }
+
+func (a *App) Run() {
+	a.Engine.Run(a.Config.Server.Addr)
+}
