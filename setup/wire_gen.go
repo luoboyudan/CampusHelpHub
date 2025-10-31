@@ -22,18 +22,18 @@ import (
 // Injectors from wire.go:
 
 func InitializeApp() *App {
-	handler := common.NewHandler()
+	errorsError := errors.NewError()
+	handler := common.NewHandler(errorsError)
 	configConfig := config.NewConfig()
 	db := repository.NewDB(configConfig)
 	userRepository := repository.NewMySQLUserRepository(db)
 	iDgenarator := snowflake.NewSnowflakeIDGenerator(configConfig)
 	tokenManager := auth.NewTokenManager(configConfig)
 	userService := service.NewUserService(userRepository, iDgenarator, tokenManager)
-	errorsError := errors.NewError()
 	wechatService := service.NewWechatService(configConfig, errorsError)
-	userHandler := frontend.NewUserHandler(handler, userService, wechatService)
+	userHandler := frontend.NewUserHandler(handler, userService, wechatService, tokenManager)
 	handlerSet := handlerset.NewHandlerSet(userHandler)
-	engine := NewEngine(handlerSet)
+	engine := NewEngine(handlerSet, tokenManager, handler)
 	app := NewApp(engine, configConfig, db)
 	return app
 }

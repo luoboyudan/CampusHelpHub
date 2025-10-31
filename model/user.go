@@ -29,3 +29,7 @@ type CreateUserRequest struct {
 	Bio      string `json:"bio"`
 	School   string `json:"school"`
 }
+
+type CreateUserResponse struct {
+	Token string `json:"token"`
+}

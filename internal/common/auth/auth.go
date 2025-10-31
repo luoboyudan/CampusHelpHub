@@ -22,7 +22,7 @@ func NewTokenManager(Config *config.Config) *TokenManager {
 		ExpireTime: Config.Token.ExpireTime,
 	}
 }
-func (tm *TokenManager) GenerateToken(userID int64) (string, error) {
+func (tm *TokenManager) GenerateToken(userID int64) (string, *errors.Error) {
 	// 生成token
 	claims := jwt.MapClaims{
 		"user_id": userID,
@@ -36,7 +36,7 @@ func (tm *TokenManager) GenerateToken(userID int64) (string, error) {
 	return tokenStr, nil
 }
 
-func (tm *TokenManager) VerifyToken(tokenStr string) (jwt.MapClaims, error) {
+func (tm *TokenManager) VerifyToken(tokenStr string) (jwt.MapClaims, *errors.Error) {
 	// 验证token
 	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
 		return tm.SecretKey, nil

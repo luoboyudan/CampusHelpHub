@@ -21,7 +21,7 @@ func NewUserService(userRepo repository.UserRepository, idGen snowflake.IDgenara
 	return &UserService{userRepo: userRepo, IDGen: idGen, TokenManager: tokenManager}
 }
 
-func (s *UserService) Create(ctx context.Context, req *model.CreateUserRequest, sessionResp *model.SessionResponse) *errors.Error {
+func (s *UserService) Create(ctx context.Context, req *model.CreateUserRequest, sessionResp *model.SessionResponse) (*model.User, *errors.Error) {
 	user := &model.User{
 		ID:       s.IDGen.GenerateID(),
 		OpenID:   sessionResp.OpenID,
@@ -32,7 +32,7 @@ func (s *UserService) Create(ctx context.Context, req *model.CreateUserRequest, 
 	}
 	err := s.userRepo.Create(ctx, user)
 	if err != nil {
-		return s.errs.NewError("创建用户失败", err.Error(), http.StatusInternalServerError, err)
+		return nil, s.errs.NewError("创建用户失败", err.Error(), http.StatusInternalServerError, err)
 	}
-	return nil
+	return user, nil
 }
