@@ -14,6 +14,7 @@ import (
 	"campushelphub/internal/common/snowflake"
 	"campushelphub/internal/config"
 	"campushelphub/internal/errors"
+	"campushelphub/internal/log"
 	"campushelphub/internal/repository"
 	"campushelphub/internal/service"
 	"github.com/google/wire"
@@ -23,7 +24,8 @@ import (
 
 func InitializeApp() *App {
 	errorsError := errors.NewError()
-	handler := common.NewHandler(errorsError)
+	logger := log.NewLogger()
+	handler := common.NewHandler(errorsError, logger)
 	configConfig := config.NewConfig()
 	db := repository.NewDB(configConfig)
 	userRepository := repository.NewMySQLUserRepository(db)
@@ -53,6 +55,8 @@ var RepositorySet = wire.NewSet(repository.NewMySQLUserRepository)
 var ServiceSet = wire.NewSet(service.NewUserService)
 
 var BaseHandlerSet = wire.NewSet(common.NewHandler)
+
+var LoggerSet = wire.NewSet(log.NewLogger)
 
 var HandlerSet = wire.NewSet(handlerset.NewHandlerSet)
 

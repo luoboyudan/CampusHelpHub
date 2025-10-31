@@ -1,19 +1,20 @@
 package common
 
 import (
-	"net/http"
-
 	"campushelphub/internal/errors"
+	"campushelphub/internal/log"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 type Handler struct {
 	Error *errors.Error
+	Log   *log.Logger
 }
 
-func NewHandler(error *errors.Error) *Handler {
-	return &Handler{Error: error}
+func NewHandler(error *errors.Error, log *log.Logger) *Handler {
+	return &Handler{Error: error, Log: log}
 }
 
 func (h *Handler) ErrorResponse(ctx *gin.Context, err *errors.Error) {
@@ -21,6 +22,7 @@ func (h *Handler) ErrorResponse(ctx *gin.Context, err *errors.Error) {
 		"error":  err.Error,
 		"detail": err.Detail,
 	})
+	h.Log.Error(err)
 }
 
 func (h *Handler) SuccessResponse(ctx *gin.Context, data interface{}) {
@@ -28,4 +30,5 @@ func (h *Handler) SuccessResponse(ctx *gin.Context, data interface{}) {
 		"success": true,
 		"data":    data,
 	})
+	h.Log.Info(data)
 }

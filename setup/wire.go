@@ -11,6 +11,7 @@ import (
 	"campushelphub/internal/common/snowflake"
 	"campushelphub/internal/config"
 	"campushelphub/internal/errors"
+	"campushelphub/internal/log"
 	"campushelphub/internal/repository"
 	"campushelphub/internal/service"
 
@@ -43,6 +44,10 @@ var ServiceSet = wire.NewSet(
 
 var BaseHandlerSet = wire.NewSet(
 	handlerCommon.NewHandler,
+)
+
+var LoggerSet = wire.NewSet(
+	log.NewLogger,
 )
 
 var HandlerSet = wire.NewSet(
@@ -83,6 +88,7 @@ func InitializeApp() *App {
 		EngineSet,
 		AppSet,
 		IDGenSet,
+		LoggerSet,
 	)
 	return nil
 }
