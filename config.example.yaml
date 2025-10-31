@@ -11,3 +11,6 @@ database:
 server:
   addr: ":8080"
 machineID: 0
+token:
+  secretKey: "your_secret_key"
+  expireTime: 3600

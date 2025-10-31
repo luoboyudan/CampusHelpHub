@@ -23,6 +23,10 @@ type Config struct {
 		Addr string `yaml:"addr"`
 	} `yaml:"server"`
 	MachineID int `yaml:"machineID"`
+	Token     struct {
+		SecretKey  string `yaml:"secretKey"`
+		ExpireTime int    `yaml:"expireTime"`
+	} `yaml:"token"`
 }
 
 func NewConfig() *Config {

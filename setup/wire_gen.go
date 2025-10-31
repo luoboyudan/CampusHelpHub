@@ -27,7 +27,7 @@ func InitializeApp() *App {
 	db := repository.NewDB(configConfig)
 	userRepository := repository.NewMySQLUserRepository(db)
 	iDgenarator := snowflake.NewSnowflakeIDGenerator(configConfig)
-	tokenManager := auth.NewTokenManager()
+	tokenManager := auth.NewTokenManager(configConfig)
 	userService := service.NewUserService(userRepository, iDgenarator, tokenManager)
 	errorsError := errors.NewError()
 	wechatService := service.NewWechatService(configConfig, errorsError)

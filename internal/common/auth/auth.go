@@ -3,6 +3,7 @@ package auth
 import (
 	"time"
 
+	"campushelphub/internal/config"
 	"campushelphub/internal/errors"
 	"net/http"
 
@@ -15,13 +16,12 @@ type TokenManager struct {
 	Error      *errors.Error
 }
 
-func NewTokenManager(secretKey string, expireTime int) *TokenManager {
+func NewTokenManager(Config *config.Config) *TokenManager {
 	return &TokenManager{
-		SecretKey:  []byte(secretKey),
-		ExpireTime: expireTime,
+		SecretKey:  []byte(Config.Token.SecretKey),
+		ExpireTime: Config.Token.ExpireTime,
 	}
 }
-
 func (tm *TokenManager) GenerateToken(userID int64) (string, error) {
 	// 生成token
 	claims := jwt.MapClaims{

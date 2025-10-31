@@ -1,6 +1,7 @@
 package service
 
 import (
+	"campushelphub/internal/common/auth"
 	"campushelphub/internal/common/snowflake"
 	"campushelphub/internal/errors"
 	"campushelphub/internal/repository"
@@ -10,13 +11,14 @@ import (
 )
 
 type UserService struct {
-	userRepo repository.UserRepository
-	errs     *errors.Error
-	IDGen    snowflake.IDgenarator
+	userRepo     repository.UserRepository
+	errs         *errors.Error
+	IDGen        snowflake.IDgenarator
+	TokenManager *auth.TokenManager
 }
 
-func NewUserService(userRepo repository.UserRepository, idGen snowflake.IDgenarator) *UserService {
-	return &UserService{userRepo: userRepo, IDGen: idGen}
+func NewUserService(userRepo repository.UserRepository, idGen snowflake.IDgenarator, tokenManager *auth.TokenManager) *UserService {
+	return &UserService{userRepo: userRepo, IDGen: idGen, TokenManager: tokenManager}
 }
 
 func (s *UserService) Create(ctx context.Context, req *model.CreateUserRequest, sessionResp *model.SessionResponse) *errors.Error {
