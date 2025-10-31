@@ -35,7 +35,7 @@ func InitializeApp() *App {
 	wechatService := service.NewWechatService(configConfig, errorsError)
 	userHandler := frontend.NewUserHandler(handler, userService, wechatService, tokenManager)
 	handlerSet := handlerset.NewHandlerSet(userHandler)
-	engine := NewEngine(handlerSet, tokenManager, handler)
+	engine := NewEngine(handlerSet, tokenManager)
 	app := NewApp(engine, configConfig, db)
 	return app
 }
