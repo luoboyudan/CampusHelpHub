@@ -7,7 +7,8 @@ import (
 	handlerCommon "campushelphub/api/common"
 	"campushelphub/api/frontend"
 	"campushelphub/api/handlerset"
-	serviceCommon "campushelphub/internal/common"
+	"campushelphub/internal/common/auth"
+	"campushelphub/internal/common/snowflake"
 	"campushelphub/internal/config"
 	"campushelphub/internal/errors"
 	"campushelphub/internal/repository"
@@ -26,6 +27,10 @@ var ConfigSet = wire.NewSet(
 
 var DBSet = wire.NewSet(
 	repository.NewDB,
+)
+
+var TokenManagerSet = wire.NewSet(
+	auth.NewTokenManager,
 )
 
 var RepositorySet = wire.NewSet(
@@ -60,7 +65,7 @@ var AppSet = wire.NewSet(
 )
 
 var IDGenSet = wire.NewSet(
-	serviceCommon.NewSnowflakeIDGenerator,
+	snowflake.NewSnowflakeIDGenerator,
 )
 
 func InitializeApp() *App {
@@ -73,6 +78,7 @@ func InitializeApp() *App {
 		BaseHandlerSet,
 		FrontendHandlerSet,
 		HandlerSet,
+		TokenManagerSet,
 		WechatServiceSet,
 		EngineSet,
 		AppSet,

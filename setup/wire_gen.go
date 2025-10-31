@@ -10,6 +10,7 @@ import (
 	"campushelphub/api/common"
 	"campushelphub/api/frontend"
 	"campushelphub/api/handlerset"
+	"campushelphub/internal/common/auth"
 	"campushelphub/internal/common/snowflake"
 	"campushelphub/internal/config"
 	"campushelphub/internal/errors"
@@ -26,7 +27,8 @@ func InitializeApp() *App {
 	db := repository.NewDB(configConfig)
 	userRepository := repository.NewMySQLUserRepository(db)
 	iDgenarator := snowflake.NewSnowflakeIDGenerator(configConfig)
-	userService := service.NewUserService(userRepository, iDgenarator)
+	tokenManager := auth.NewTokenManager()
+	userService := service.NewUserService(userRepository, iDgenarator, tokenManager)
 	errorsError := errors.NewError()
 	wechatService := service.NewWechatService(configConfig, errorsError)
 	userHandler := frontend.NewUserHandler(handler, userService, wechatService)
@@ -43,6 +45,8 @@ var ErrorSet = wire.NewSet(errors.NewError)
 var ConfigSet = wire.NewSet(config.NewConfig)
 
 var DBSet = wire.NewSet(repository.NewDB)
+
+var TokenManagerSet = wire.NewSet(auth.NewTokenManager)
 
 var RepositorySet = wire.NewSet(repository.NewMySQLUserRepository)
 
@@ -63,6 +67,5 @@ var EngineSet = wire.NewSet(
 var AppSet = wire.NewSet(
 	NewApp,
 )
-
 
 var IDGenSet = wire.NewSet(snowflake.NewSnowflakeIDGenerator)
