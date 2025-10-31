@@ -10,7 +10,7 @@ import (
 	"campushelphub/api/common"
 	"campushelphub/api/frontend"
 	"campushelphub/api/handlerset"
-	common2 "campushelphub/internal/common"
+	"campushelphub/internal/common/snowflake"
 	"campushelphub/internal/config"
 	"campushelphub/internal/errors"
 	"campushelphub/internal/repository"
@@ -25,7 +25,7 @@ func InitializeApp() *App {
 	configConfig := config.NewConfig()
 	db := repository.NewDB(configConfig)
 	userRepository := repository.NewMySQLUserRepository(db)
-	iDgenarator := common2.NewSnowflakeIDGenerator(configConfig)
+	iDgenarator := snowflake.NewSnowflakeIDGenerator(configConfig)
 	userService := service.NewUserService(userRepository, iDgenarator)
 	errorsError := errors.NewError()
 	wechatService := service.NewWechatService(configConfig, errorsError)
@@ -64,4 +64,5 @@ var AppSet = wire.NewSet(
 	NewApp,
 )
 
-var IDGenSet = wire.NewSet(common2.NewSnowflakeIDGenerator)
+
+var IDGenSet = wire.NewSet(snowflake.NewSnowflakeIDGenerator)
