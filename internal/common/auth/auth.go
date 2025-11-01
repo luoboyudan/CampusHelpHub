@@ -31,7 +31,7 @@ func (tm *TokenManager) GenerateToken(userID int64) (string, *errors.Error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenStr, err := token.SignedString(tm.SecretKey)
 	if err != nil {
-		return "", tm.Error.NewError("生成token失败", err.Error(), http.StatusInternalServerError, err)
+		return "", tm.Error.NewError(errors.ErrTokenGenerate, http.StatusInternalServerError, err)
 	}
 	return tokenStr, nil
 }
@@ -42,11 +42,11 @@ func (tm *TokenManager) VerifyToken(tokenStr string) (jwt.MapClaims, *errors.Err
 		return tm.SecretKey, nil
 	})
 	if err != nil {
-		return nil, tm.Error.NewError("验证token失败", err.Error(), http.StatusUnauthorized, err)
+		return nil, tm.Error.NewError(errors.ErrAuth, http.StatusUnauthorized, err)
 	}
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return nil, tm.Error.NewError("无效的token claims", "invalid token claims", http.StatusUnauthorized, err)
+		return nil, tm.Error.NewError(errors.ErrAuth, http.StatusUnauthorized, err)
 	}
 	return claims, nil
 }

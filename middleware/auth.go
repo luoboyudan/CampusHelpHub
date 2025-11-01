@@ -1,26 +1,29 @@
 package middleware
 
 import (
-	apiCommon "campushelphub/api/common"
 	"campushelphub/internal/common/auth"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func AuthMiddleware(tokenManager *auth.TokenManager, baseHandler *apiCommon.Handler) gin.HandlerFunc {
+func AuthMiddleware(tokenManager *auth.TokenManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 从请求头中获取token
 		tokenStr := c.GetHeader("Authorization")
 		if tokenStr == "" {
-			baseHandler.ErrorResponse(c, baseHandler.Error.NewError("未授权", "unauthorized", http.StatusUnauthorized, nil))
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"message": "未授权",
+			})
 			c.Abort()
 			return
 		}
 		// 验证token
 		claims, err := tokenManager.VerifyToken(tokenStr)
 		if err != nil {
-			baseHandler.ErrorResponse(c, err)
+			c.JSON(http.StatusUnauthorized, gin.H{
+				"message": err.Msg,
+			})
 			c.Abort()
 			return
 		}

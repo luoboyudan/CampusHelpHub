@@ -32,7 +32,7 @@ func (s *UserService) Create(ctx context.Context, req *model.CreateUserRequest, 
 	}
 	err := s.userRepo.Create(ctx, user)
 	if err != nil {
-		return nil, s.errs.NewError("创建用户失败", err.Error(), http.StatusInternalServerError, err)
+		return nil, s.errs.NewError(errors.ErrUserRegisterCreate, http.StatusInternalServerError, err)
 	}
 	return user, nil
 }

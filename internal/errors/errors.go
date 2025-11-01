@@ -1,5 +1,7 @@
 package errors
 
+import "fmt"
+
 type Error struct {
 	Msg        string `json:"msg"`
 	Detail     string `json:"detail"`
@@ -10,10 +12,10 @@ type Error struct {
 func NewError() *Error {
 	return &Error{}
 }
-func (e *Error) NewError(msg, detail string, httpStatus int, err error) *Error {
+func (e *Error) NewError(errType string, httpStatus int, err error) *Error {
 	return &Error{
-		Msg:        msg,
-		Detail:     detail,
+		Msg:        ErrorMsgTemplates[errType][0],
+		Detail:     fmt.Sprintf(ErrorMsgTemplates[errType][1], err.Error()),
 		HTTPStatus: httpStatus,
 		Err:        err,
 	}

@@ -29,23 +29,23 @@ func (s *WechatService) Login(code string) (*model.SessionResponse, *errors.Erro
 	fullURL := s.config.Wechat.Code2SessionURL + "?" + url.Values(params).Encode()
 	resp, err := http.Get(fullURL)
 	if err != nil {
-		newError := s.errs.NewError("请求session失败", err.Error(), http.StatusInternalServerError, err)
+		newError := s.errs.NewError(errors.ErrWechatLoginSession, http.StatusInternalServerError, err)
 		return nil, newError
 	}
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		newError := s.errs.NewError("读取session响应失败", err.Error(), http.StatusInternalServerError, err)
+		newError := s.errs.NewError(errors.ErrWechatLoginSession, http.StatusInternalServerError, err)
 		return nil, newError
 	}
 	var sessionResp model.SessionResponse
 	err = json.Unmarshal(body, &sessionResp)
 	if err != nil {
-		newError := s.errs.NewError("解析session响应失败", err.Error(), http.StatusInternalServerError, err)
+		newError := s.errs.NewError(errors.ErrWechatLoginSession, http.StatusInternalServerError, err)
 		return nil, newError
 	}
 	if sessionResp.ErrCode != 0 {
-		newError := s.errs.NewError("session响应错误", sessionResp.ErrMsg, http.StatusInternalServerError, nil)
+		newError := s.errs.NewError(errors.ErrWechatLoginSession, http.StatusInternalServerError, nil)
 		return nil, newError
 	}
 	return &sessionResp, nil
