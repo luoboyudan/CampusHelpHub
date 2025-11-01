@@ -28,8 +28,8 @@ var ErrorMsgTemplates = map[string]ErrorMsgTemplate{
 		Detail: "数据库创建用户失败(%s)",
 	},
 	ErrUserRegisterGetByWechatOpenID: {
-		"通过微信OpenID查询用户失败",
-		"通过微信OpenID查询用户失败: %s",
+		Msg:    "通过微信OpenID查询用户失败",
+		Detail: "通过微信OpenID查询用户失败(%s)",
 	},
 	ErrAuth: {
 		Msg:    "认证失败",
