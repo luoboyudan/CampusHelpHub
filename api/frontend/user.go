@@ -32,6 +32,7 @@ func (h *UserHandler) CreateUser(ctx *gin.Context) {
 	var req model.CreateUserRequest
 	logInfo := &log.BusinessLogInfo{
 		BusinessType: common.BusinessTypeUserRegister,
+		ClientIP:     ctx.ClientIP(),
 	}
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		logInfo.Status = common.FailStatus

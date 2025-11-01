@@ -8,6 +8,7 @@ import (
 type BusinessLogInfo struct {
 	BusinessType string
 	ID           uint64
+	ClientIP     string
 	Status       string
 	Extra        map[string]interface{}
 }
@@ -23,7 +24,7 @@ func NewLogger() *Logger {
 }
 
 func (l *Logger) Info(data *BusinessLogInfo) {
-	l.Log.Printf("INFO: business_type=%s, id=%d, status=%s, extra=%v", data.BusinessType, data.ID, data.Status, data.Extra)
+	l.Log.Printf("INFO: business_type=%s, id=%d, client_ip=%s, status=%s, extra=%v", data.BusinessType, data.ID, data.ClientIP, data.Status, data.Extra)
 }
 
 func (l *Logger) Error(err *errors.Error) {
