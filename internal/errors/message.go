@@ -9,25 +9,30 @@ const (
 	ErrUserRegisterGetByWechatOpenID = "ErrUserRegisterGetByWechatOpenID"
 )
 
-var ErrorMsgTemplates = map[string][2]string{
+type ErrorMsgTemplate struct {
+	Msg    string
+	Detail string
+}
+
+var ErrorMsgTemplates = map[string]ErrorMsgTemplate{
 	ErrUserRegisterRequest: {
-		"请求参数错误",
-		"请求参数错误: %s",
+		Msg:    "请求参数错误",
+		Detail: "请求参数错误(%s)",
 	},
 	ErrWechatLoginSession: {
-		"登录失败",
-		"登录失败: %s",
+		Msg:    "登录失败",
+		Detail: "微信api接口请求失败(%s)",
 	},
 	ErrUserRegisterCreate: {
-		"创建用户失败",
-		"创建用户失败: %s",
+		Msg:    "创建用户失败",
+		Detail: "数据库创建用户失败(%s)",
 	},
 	ErrUserRegisterGetByWechatOpenID: {
 		"通过微信OpenID查询用户失败",
 		"通过微信OpenID查询用户失败: %s",
 	},
 	ErrAuth: {
-		"认证失败",
-		"认证失败: %s",
+		Msg:    "认证失败",
+		Detail: "token认证失败(%s)",
 	},
 }
