@@ -14,8 +14,8 @@ func NewError() *Error {
 }
 func (e *Error) NewError(errType string, httpStatus int, err error) *Error {
 	return &Error{
-		Msg:        ErrorMsgTemplates[errType][0],
-		Detail:     fmt.Sprintf(ErrorMsgTemplates[errType][1], err.Error()),
+		Msg:        ErrorMsgTemplates[errType].Msg,
+		Detail:     fmt.Sprintf(ErrorMsgTemplates[errType].Detail, err.Error()),
 		HTTPStatus: httpStatus,
 		Err:        err,
 	}
