@@ -12,7 +12,12 @@ type Error struct {
 func NewError() *Error {
 	return &Error{}
 }
+
+// NewError 创建一个新的错误
 func (e *Error) NewError(errType string, httpStatus int, err error) *Error {
+	if err == nil {
+		err = fmt.Errorf("%s", errType)
+	}
 	return &Error{
 		Msg:        ErrorMsgTemplates[errType].Msg,
 		Detail:     fmt.Sprintf(ErrorMsgTemplates[errType].Detail, err.Error()),
