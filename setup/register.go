@@ -26,6 +26,6 @@ func SetupRouter(app *gin.Engine, handlerSet *handlerset.HandlerSet, tokenManage
 func SetupUserRouter(routerGroup *gin.RouterGroup, handlerSet *handlerset.HandlerSet, tokenManager *auth.TokenManager) {
 	looseGroup := routerGroup.Group("/user")
 	{
-		looseGroup.POST("/user", handlerSet.UserHandler.CreateUser)
+		looseGroup.POST("/register", handlerSet.UserHandler.CreateUser)
 	}
 }
