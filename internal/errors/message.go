@@ -1,11 +1,12 @@
 package errors
 
 const (
-	ErrAuth                = "ErrAuth"
-	ErrTokenGenerate       = "ErrTokenGenerate"
-	ErrUserRegisterRequest = "ErrUserRegisterRequest"
-	ErrWechatLoginSession  = "ErrWechatLoginSession"
-	ErrUserRegisterCreate  = "ErrUserRegisterCreate"
+	ErrAuth                          = "ErrAuth"
+	ErrTokenGenerate                 = "ErrTokenGenerate"
+	ErrUserRegisterRequest           = "ErrUserRegisterRequest"
+	ErrWechatLoginSession            = "ErrWechatLoginSession"
+	ErrUserRegisterCreate            = "ErrUserRegisterCreate"
+	ErrUserRegisterGetByWechatOpenID = "ErrUserRegisterGetByWechatOpenID"
 )
 
 var ErrorMsgTemplates = map[string][2]string{
@@ -20,6 +21,10 @@ var ErrorMsgTemplates = map[string][2]string{
 	ErrUserRegisterCreate: {
 		"创建用户失败",
 		"创建用户失败: %s",
+	},
+	ErrUserRegisterGetByWechatOpenID: {
+		"通过微信OpenID查询用户失败",
+		"通过微信OpenID查询用户失败: %s",
 	},
 	ErrAuth: {
 		"认证失败",
