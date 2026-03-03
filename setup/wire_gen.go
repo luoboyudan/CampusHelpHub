@@ -10,6 +10,7 @@ import (
 	"campushelphub/api/common"
 	"campushelphub/api/frontend"
 	"campushelphub/api/handlerset"
+	"campushelphub/internal/common/RSA"
 	"campushelphub/internal/common/auth"
 	"campushelphub/internal/common/snowflake"
 	"campushelphub/internal/config"
@@ -17,6 +18,7 @@ import (
 	"campushelphub/internal/log"
 	"campushelphub/internal/repository"
 	"campushelphub/internal/service"
+
 	"github.com/google/wire"
 )
 
@@ -33,7 +35,9 @@ func InitializeApp() *App {
 	tokenManager := auth.NewTokenManager(configConfig)
 	userService := service.NewUserService(userRepository, iDgenarator, tokenManager)
 	wechatService := service.NewWechatService(configConfig, errorsError)
-	userHandler := frontend.NewUserHandler(handler, userService, wechatService, tokenManager)
+	chromeService := service.NewChromeService(configConfig, errorsError)
+	rsa := RSA.NewRSA(configConfig)
+	userHandler := frontend.NewUserHandler(handler, userService, wechatService, tokenManager, chromeService, rsa)
 	handlerSet := handlerset.NewHandlerSet(userHandler)
 	engine := NewEngine(handlerSet, tokenManager)
 	app := NewApp(engine, configConfig, db)
@@ -50,17 +54,17 @@ var DBSet = wire.NewSet(repository.NewDB)
 
 var TokenManagerSet = wire.NewSet(auth.NewTokenManager)
 
+var RSASet = wire.NewSet(RSA.NewRSA)
+
 var RepositorySet = wire.NewSet(repository.NewMySQLUserRepository)
 
-var ServiceSet = wire.NewSet(service.NewUserService)
+var ServiceSet = wire.NewSet(service.NewUserService, service.NewChromeService, service.NewWechatService)
 
 var BaseHandlerSet = wire.NewSet(common.NewHandler)
 
 var LoggerSet = wire.NewSet(log.NewLogger)
 
 var HandlerSet = wire.NewSet(handlerset.NewHandlerSet)
-
-var WechatServiceSet = wire.NewSet(service.NewWechatService)
 
 var FrontendHandlerSet = wire.NewSet(frontend.NewUserHandler)
 

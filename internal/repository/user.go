@@ -10,6 +10,7 @@ import (
 type UserRepository interface {
 	Create(ctx context.Context, user *model.User) error
 	GetByWechatOpenID(ctx context.Context, wechatOpenID string) (*model.User, error)
+	Verify(ctx context.Context, userID uint64) error
 }
 
 type MySQLUserRepository struct {
@@ -34,4 +35,8 @@ func (r *MySQLUserRepository) GetByWechatOpenID(ctx context.Context, wechatOpenI
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (r *MySQLUserRepository) Verify(ctx context.Context, userID uint64) error {
+	return r.db.WithContext(ctx).Model(&model.User{}).Where("id = ?", userID).Update("auth", true).Error
 }

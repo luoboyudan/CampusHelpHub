@@ -2,6 +2,16 @@ wechat:
   appid: "your_appid"
   appsecret: "your_secret"
   code2sessionURL: "https://api.weixin.qq.com/sns/jscode2session"
+chromeVerify:
+  chromeDriverPath: "path/to/chromedriver"
+  port: 9515
+  url: "http://example.com"
+  chromeBinaryPath: "path/to/chrome"
+  logFilePath: "path/to/logfile"
+  verifySign: "jsxsd"
+RSA:
+  privateKey: "your_private_key"
+  publicKey: "your_public_key"
 database:
   host: "localhost"
   port: 3306

@@ -7,6 +7,7 @@ import (
 	handlerCommon "campushelphub/api/common"
 	"campushelphub/api/frontend"
 	"campushelphub/api/handlerset"
+	RSA "campushelphub/internal/common/RSA"
 	"campushelphub/internal/common/auth"
 	"campushelphub/internal/common/snowflake"
 	"campushelphub/internal/config"
@@ -34,12 +35,18 @@ var TokenManagerSet = wire.NewSet(
 	auth.NewTokenManager,
 )
 
+var RSASet = wire.NewSet(
+	RSA.NewRSA,
+)
+
 var RepositorySet = wire.NewSet(
 	repository.NewMySQLUserRepository,
 )
 
 var ServiceSet = wire.NewSet(
 	service.NewUserService,
+	service.NewChromeService,
+	service.NewWechatService,
 )
 
 var BaseHandlerSet = wire.NewSet(
@@ -52,9 +59,6 @@ var LoggerSet = wire.NewSet(
 
 var HandlerSet = wire.NewSet(
 	handlerset.NewHandlerSet,
-)
-var WechatServiceSet = wire.NewSet(
-	service.NewWechatService,
 )
 
 var FrontendHandlerSet = wire.NewSet(
@@ -84,7 +88,7 @@ func InitializeApp() *App {
 		FrontendHandlerSet,
 		HandlerSet,
 		TokenManagerSet,
-		WechatServiceSet,
+		RSASet,
 		EngineSet,
 		AppSet,
 		IDGenSet,

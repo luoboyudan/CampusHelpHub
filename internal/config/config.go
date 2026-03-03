@@ -6,12 +6,31 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+type ChromeVerifyConfig struct {
+	ChromeDriverPath string `yaml:"chromeDriverPath"`
+	Port             int    `yaml:"port"`
+	URL              string `yaml:"url"`
+	ChromeBinaryPath string `yaml:"chromeBinaryPath"`
+}
+
 type Config struct {
 	Wechat struct {
 		AppID           string `yaml:"appid"`
 		AppSecret       string `yaml:"appsecret"`
 		Code2SessionURL string `yaml:"code2sessionURL"`
 	} `yaml:"wechat"`
+	ChromeVerify struct {
+		ChromeDriverPath string `yaml:"chromeDriverPath"`
+		Port             int    `yaml:"port"`
+		URL              string `yaml:"url"`
+		ChromeBinaryPath string `yaml:"chromeBinaryPath"`
+		LogFilePath      string `yaml:"logFilePath"`
+		VerifySign       string `yaml:"verifySign"`
+	} `yaml:"chromeVerify"`
+	RSA struct {
+		PrivateKey string `yaml:"privateKey"`
+		PublicKey  string `yaml:"publicKey"`
+	} `yaml:"RSA"`
 	Database struct {
 		Host     string `yaml:"host"`
 		Port     int    `yaml:"port"`

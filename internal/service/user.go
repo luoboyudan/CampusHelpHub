@@ -36,3 +36,11 @@ func (s *UserService) Create(ctx context.Context, req *model.CreateUserRequest, 
 	}
 	return user, nil
 }
+
+func (s *UserService) Verify(ctx context.Context, req *model.VerifyUserRequest) *errors.Error {
+	err := s.userRepo.Verify(ctx, req.UserID)
+	if err != nil {
+		return s.errs.NewError(errors.ErrUserVerifyDB, http.StatusInternalServerError, err)
+	}
+	return nil
+}

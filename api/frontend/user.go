@@ -2,6 +2,7 @@ package frontend
 
 import (
 	"campushelphub/api/common"
+	RSA "campushelphub/internal/common/RSA"
 	"campushelphub/internal/common/auth"
 	"campushelphub/internal/errors"
 	"campushelphub/internal/log"
@@ -17,14 +18,18 @@ type UserHandler struct {
 	UserService   *service.UserService
 	WechatService *service.WechatService
 	TokenManager  *auth.TokenManager
+	ChromeService *service.ChromeService
+	RSA           *RSA.RSA
 }
 
-func NewUserHandler(h *common.Handler, us *service.UserService, ws *service.WechatService, tm *auth.TokenManager) *UserHandler {
+func NewUserHandler(h *common.Handler, us *service.UserService, ws *service.WechatService, tm *auth.TokenManager, cs *service.ChromeService, rs *RSA.RSA) *UserHandler {
 	return &UserHandler{
 		Handler:       h,
 		UserService:   us,
 		WechatService: ws,
 		TokenManager:  tm,
+		ChromeService: cs,
+		RSA:           rs,
 	}
 }
 
@@ -68,4 +73,50 @@ func (h *UserHandler) CreateUser(ctx *gin.Context) {
 	h.SuccessResponse(ctx, logInfo, model.CreateUserResponse{
 		Token: token,
 	})
+}
+
+func (h *UserHandler) VerifyUser(ctx *gin.Context) {
+	var req model.VerifyUserRequest
+	logInfo := &log.BusinessLogInfo{
+		BusinessType: common.BusinessTypeUserVerify,
+		ClientIP:     ctx.ClientIP(),
+	}
+	userID, ok := ctx.Get("user_id")
+
+	if !ok {
+		logInfo.Status = common.FailStatus
+		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrUserVerifyRequest, http.StatusBadRequest, nil))
+		return
+	}
+	req.UserID = uint64(userID.(float64))
+
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		logInfo.Status = common.FailStatus
+		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrUserVerifyRequest, http.StatusBadRequest, err))
+		return
+	}
+	//解密
+	password, err := h.RSA.Decrypt([]byte(req.RSAPassword))
+	if err != nil {
+		logInfo.Status = common.FailStatus
+		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrUserVerifyRequest, http.StatusBadRequest, err))
+		return
+	}
+	// 验证用户
+	if err := h.ChromeService.VerifyStudent(&model.ChromeStudentVerify{
+		StudentID: req.StudentID,
+		Password:  string(password),
+	}); err != nil {
+		logInfo.Status = common.FailStatus
+		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrUserVerifyRequest, http.StatusBadRequest, err))
+		return
+	}
+	// 验证用户
+	if err := h.UserService.Verify(ctx, &req); err != nil {
+		logInfo.Status = common.FailStatus
+		h.ErrorResponse(ctx, logInfo, err)
+		return
+	}
+	logInfo.Status = common.SuccessStatus
+	h.SuccessResponse(ctx, logInfo, nil)
 }
