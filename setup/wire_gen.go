@@ -18,7 +18,6 @@ import (
 	"campushelphub/internal/log"
 	"campushelphub/internal/repository"
 	"campushelphub/internal/service"
-
 	"github.com/google/wire"
 )
 
@@ -40,7 +39,7 @@ func InitializeApp() *App {
 	userHandler := frontend.NewUserHandler(handler, userService, wechatService, tokenManager, chromeService, rsa)
 	encryptionHandler := frontend.NewEncryptionHandler(handler, errorsError, logger, rsa)
 	handlerSet := handlerset.NewHandlerSet(userHandler, encryptionHandler)
-	engine := NewEngine(handlerSet, tokenManager)
+	engine := NewEngine(handlerSet, tokenManager, logger)
 	app := NewApp(engine, configConfig, db)
 	return app
 }

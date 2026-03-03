@@ -7,6 +7,7 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"errors"
+	"fmt"
 )
 
 type RSA struct {
@@ -50,14 +51,57 @@ func parsePrivateKeyFromPEM(privateKeyStr string) (*rsa.PrivateKey, error) {
 	return privateKey, nil
 }
 
+// 解析公钥
+func parsePublicKeyFromPEM(publicKeyStr string) (*rsa.PublicKey, error) {
+	// 1. 空值校验
+	if publicKeyStr == "" {
+		return nil, errors.New("RSA公钥字符串不能为空")
+	}
+
+	// 2. 解码PEM格式数据（提取公钥的DER编码内容）
+	block, rest := pem.Decode([]byte(publicKeyStr))
+	if block == nil || len(rest) > 0 {
+		return nil, errors.New("解析PEM格式公钥失败:无效的PEM数据(可能包含多余内容)")
+	}
+
+	// 3. 校验PEM块类型，仅处理合法的公钥类型
+	switch block.Type {
+	case "RSA PUBLIC KEY": // PKCS1格式
+		// 解析PKCS1格式公钥
+		pubKey, err := x509.ParsePKCS1PublicKey(block.Bytes)
+		if err != nil {
+			return nil, fmt.Errorf("解析PKCS1格式RSA公钥失败:%w", err)
+		}
+		return pubKey, nil
+
+	case "PUBLIC KEY": // PKIX/X.509格式（最常用）
+		// 解析PKIX格式公钥
+		pubKeyIface, err := x509.ParsePKIXPublicKey(block.Bytes)
+		if err != nil {
+			return nil, fmt.Errorf("解析PKIX格式RSA公钥失败:%w", err)
+		}
+		// 类型断言为RSA公钥（排除ECC等其他类型公钥）
+		rsaPubKey, ok := pubKeyIface.(*rsa.PublicKey)
+		if !ok {
+			return nil, errors.New("解析出的公钥不是RSA类型(可能是ECC等其他算法)")
+		}
+		return rsaPubKey, nil
+
+	default:
+		return nil, fmt.Errorf("不支持的PEM块类型:%s(需为RSA PUBLIC KEY或PUBLIC KEY)", block.Type)
+	}
+}
+
 // 构造函数
 func NewRSA(config *config.Config) *RSA {
 	privateKey, err := parsePrivateKeyFromPEM(config.RSA.PrivateKey)
+	publicKey, err := parsePublicKeyFromPEM(config.RSA.PublicKey)
 	if err != nil {
 		return nil
 	}
 	return &RSA{
 		privateKey: privateKey,
+		publicKey:  publicKey,
 	}
 }
 
