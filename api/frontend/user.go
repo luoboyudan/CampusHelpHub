@@ -33,6 +33,31 @@ func NewUserHandler(h *common.Handler, us *service.UserService, ws *service.Wech
 	}
 }
 
+func (h *UserHandler) CheckUser(ctx *gin.Context) {
+	var req model.CheckUserRequest
+
+	logInfo := &log.BusinessLogInfo{
+		BusinessType: common.BusinessTypeUserCheck,
+		ClientIP:     ctx.ClientIP(),
+	}
+
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		logInfo.Status = common.FailStatus
+		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrUserCheckRequest, http.StatusBadRequest, err))
+		return
+	}
+	// 检查用户是否存在
+	exist, err := h.UserService.CheckUser(ctx, &req)
+	if err != nil {
+		logInfo.Status = common.FailStatus
+		h.ErrorResponse(ctx, logInfo, err)
+		return
+	}
+	h.SuccessResponse(ctx, logInfo, model.CheckUserResponse{
+		Exist: exist,
+	})
+}
+
 func (h *UserHandler) CreateUser(ctx *gin.Context) {
 	var req model.CreateUserRequest
 
@@ -72,6 +97,40 @@ func (h *UserHandler) CreateUser(ctx *gin.Context) {
 	logInfo.Status = common.SuccessStatus
 	h.SuccessResponse(ctx, logInfo, model.CreateUserResponse{
 		Token: token,
+	})
+}
+
+func (h *UserHandler) LoginUser(ctx *gin.Context) {
+	var req model.LoginUserRequest
+	logInfo := &log.BusinessLogInfo{
+		BusinessType: common.BusinessTypeUserLogin,
+		ClientIP:     ctx.ClientIP(),
+	}
+
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		logInfo.Status = common.FailStatus
+		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrUserLoginRequest, http.StatusBadRequest, err))
+		return
+	}
+	// 登录用户
+	sessionResp, err := h.WechatService.Login(req.Code)
+	user, err := h.UserService.Login(ctx, sessionResp)
+	if err != nil {
+		logInfo.Status = common.FailStatus
+		h.ErrorResponse(ctx, logInfo, err)
+		return
+	}
+	logInfo.ID = user.ID
+	token, err := h.TokenManager.GenerateToken(int64(user.ID))
+	if err != nil {
+		logInfo.Status = common.FailStatus
+		h.ErrorResponse(ctx, logInfo, err)
+		return
+	}
+	logInfo.Status = common.SuccessStatus
+	h.SuccessResponse(ctx, logInfo, model.LoginUserResponse{
+		Token:    token,
+		Username: user.Username,
 	})
 }
 
@@ -118,5 +177,7 @@ func (h *UserHandler) VerifyUser(ctx *gin.Context) {
 		return
 	}
 	logInfo.Status = common.SuccessStatus
-	h.SuccessResponse(ctx, logInfo, nil)
+	h.SuccessResponse(ctx, logInfo, model.VerifyUserResponse{
+		Result: true,
+	})
 }

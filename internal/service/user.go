@@ -21,6 +21,22 @@ func NewUserService(userRepo repository.UserRepository, idGen snowflake.IDgenara
 	return &UserService{userRepo: userRepo, IDGen: idGen, TokenManager: tokenManager}
 }
 
+func (s *UserService) CheckUser(ctx context.Context, req *model.CheckUserRequest) (bool, *errors.Error) {
+	exist, err := s.userRepo.CheckUserExist(ctx, req.OpenID)
+	if err != nil {
+		return false, s.errs.NewError(errors.ErrUserCheckRequest, http.StatusInternalServerError, err)
+	}
+	return exist, nil
+}
+
+func (s *UserService) Login(ctx context.Context, sessionResp *model.SessionResponse) (*model.User, *errors.Error) {
+	user, err := s.userRepo.GetByWechatOpenID(ctx, sessionResp.OpenID)
+	if err != nil {
+		return nil, s.errs.NewError(errors.ErrUserLoginRequest, http.StatusInternalServerError, err)
+	}
+	return user, nil
+}
+
 func (s *UserService) Create(ctx context.Context, req *model.CreateUserRequest, sessionResp *model.SessionResponse) (*model.User, *errors.Error) {
 	user := &model.User{
 		ID:       s.IDGen.GenerateID(),

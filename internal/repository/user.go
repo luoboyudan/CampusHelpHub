@@ -10,6 +10,7 @@ import (
 type UserRepository interface {
 	Create(ctx context.Context, user *model.User) error
 	GetByWechatOpenID(ctx context.Context, wechatOpenID string) (*model.User, error)
+	CheckUserExist(ctx context.Context, OpenID string) (bool, error)
 	Verify(ctx context.Context, userID uint64) error
 }
 
@@ -22,17 +23,10 @@ func NewMySQLUserRepository(db *gorm.DB) UserRepository {
 }
 
 func (r *MySQLUserRepository) Create(ctx context.Context, user *model.User) error {
-	exist, err := r.checkUserExist(ctx, user.OpenID)
-	if err != nil {
-		return err
-	}
-	if exist {
-		return nil
-	}
 	return r.db.WithContext(ctx).Create(user).Error
 }
 
-func (r *MySQLUserRepository) checkUserExist(ctx context.Context, OpenID string) (bool, error) {
+func (r *MySQLUserRepository) CheckUserExist(ctx context.Context, OpenID string) (bool, error) {
 	var count int64
 	err := r.db.WithContext(ctx).Model(&model.User{}).Where("open_id = ?", OpenID).Count(&count).Error
 	if err == gorm.ErrRecordNotFound {

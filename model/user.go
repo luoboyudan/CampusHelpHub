@@ -22,6 +22,14 @@ func (User) TableName() string {
 	return "users"
 }
 
+type CheckUserRequest struct {
+	OpenID string `json:"openid" binding:"required"`
+}
+
+type CheckUserResponse struct {
+	Exist bool `json:"exist"`
+}
+
 type CreateUserRequest struct {
 	Code     string `json:"code" binding:"required"`
 	Username string `json:"username" binding:"required"`
@@ -38,4 +46,17 @@ type VerifyUserRequest struct {
 	StudentID   string `json:"studentid" binding:"required"`
 	RSAPassword string `json:"password" binding:"required"`
 	UserID      uint64 `json:"userid" binding:"omitempty"`
+}
+
+type VerifyUserResponse struct {
+	Result bool `json:"result"`
+}
+
+type LoginUserRequest struct {
+	Code string `json:"code" binding:"required"`
+}
+
+type LoginUserResponse struct {
+	Token    string `json:"token"`
+	Username string `json:"username"`
 }

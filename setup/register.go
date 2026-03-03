@@ -30,12 +30,12 @@ func SetupUserRouter(routerGroup *gin.RouterGroup, handlerSet *handlerset.Handle
 	openGroup := routerGroup.Group("/user")
 	{
 		openGroup.POST("/register", handlerSet.UserHandler.CreateUser)
+		openGroup.POST("/login", handlerSet.UserHandler.LoginUser)
 	}
 	authGroup := routerGroup.Group("/user-auth", middleware.AuthMiddleware(tokenManager, logger))
 	{
 		authGroup.POST("/verify", handlerSet.UserHandler.VerifyUser)
 	}
-
 }
 
 func SetupEncryptionRouter(routerGroup *gin.RouterGroup, handlerSet *handlerset.HandlerSet) {
