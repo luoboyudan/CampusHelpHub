@@ -18,6 +18,7 @@ type ChromeService struct {
 	config  *config.Config
 	errs    *errors.Error
 	service *selenium.Service
+	caps    selenium.Capabilities
 }
 
 // NewChromeService 创建Chrome服务，部分配置项从配置文件中获取
@@ -49,6 +50,7 @@ func NewChromeService(cfg *config.Config, errs *errors.Error) *ChromeService {
 			"--disable-popup-blocking",                      // 禁用弹窗拦截
 			"--persistent-logging=1",                        // 开启Chrome持久日志
 			"--log-level=0",                                 // Chrome日志级别（0=详细，3=只报错）
+			"--headless",                                    // 无头模式
 		},
 		// 禁用Chrome的自动退出机制
 		ExcludeSwitches: []string{"enable-automation", "disable-background-networking"},
@@ -58,6 +60,7 @@ func NewChromeService(cfg *config.Config, errs *errors.Error) *ChromeService {
 		config:  cfg,
 		errs:    errs,
 		service: service,
+		caps:    caps,
 	}
 }
 
@@ -65,14 +68,14 @@ func (s *ChromeService) VerifyStudent(verify *model.ChromeStudentVerify) *errors
 	studentID := verify.StudentID
 	password := verify.Password
 	// 连接Selenium并打开浏览器会话
-	wd, err := selenium.NewRemote(selenium.Capabilities{"browserName": "chrome"}, s.config.ChromeVerify.URL)
+	wd, err := selenium.NewRemote(s.caps, s.config.ChromeVerify.DriverURL)
 	if err != nil {
 		return s.errs.NewError(errors.ErrChromeOpen, http.StatusInternalServerError, err)
 	}
 	defer wd.Quit() // 程序结束时关闭关于会话
 
 	// 打开认证页面
-	if err := wd.Get(s.config.ChromeVerify.URL); err != nil {
+	if err = wd.Get(s.config.ChromeVerify.URL); err != nil {
 		return s.errs.NewError(errors.ErrChromeOpen, http.StatusInternalServerError, err)
 	}
 

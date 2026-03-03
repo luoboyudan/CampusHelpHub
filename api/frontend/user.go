@@ -96,7 +96,7 @@ func (h *UserHandler) VerifyUser(ctx *gin.Context) {
 		return
 	}
 	//解密
-	password, err := h.RSA.Decrypt([]byte(req.RSAPassword))
+	password, err := h.RSA.Decrypt(req.RSAPassword)
 	if err != nil {
 		logInfo.Status = common.FailStatus
 		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrUserVerifyRequest, http.StatusBadRequest, err))
@@ -108,7 +108,7 @@ func (h *UserHandler) VerifyUser(ctx *gin.Context) {
 		Password:  string(password),
 	}); err != nil {
 		logInfo.Status = common.FailStatus
-		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrUserVerifyRequest, http.StatusBadRequest, err))
+		h.ErrorResponse(ctx, logInfo, err)
 		return
 	}
 	// 验证用户

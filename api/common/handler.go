@@ -22,7 +22,9 @@ func (h *Handler) ErrorResponse(ctx *gin.Context, logInfo *log.BusinessLogInfo, 
 		"error":  err.Error(),
 		"detail": err.Detail,
 	})
-	ctx.Error(err)
+	logInfo.Extra = map[string]interface{}{
+		"error": err.Error(),
+	}
 	h.Log.Info(logInfo)
 }
 

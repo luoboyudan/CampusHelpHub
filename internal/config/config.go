@@ -22,6 +22,7 @@ type Config struct {
 	ChromeVerify struct {
 		ChromeDriverPath string `yaml:"chromeDriverPath"`
 		Port             int    `yaml:"port"`
+		DriverURL        string `yaml:"driverURL"`
 		URL              string `yaml:"url"`
 		ChromeBinaryPath string `yaml:"chromeBinaryPath"`
 		LogFilePath      string `yaml:"logFilePath"`

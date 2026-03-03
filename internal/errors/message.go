@@ -14,6 +14,7 @@ const (
 	ErrChromeInteraction             = "ErrChromeInteraction"
 	ErrChromeVerifyFailed            = "ErrChromeVerifyFailed"
 	ErrGetPublicKeyRequest           = "ErrGetPublicKeyRequest"
+	ErrGetPublicKey                  = "ErrGetPublicKey"
 )
 
 type ErrorMsgTemplate struct {
@@ -73,5 +74,9 @@ var ErrorMsgTemplates = map[string]ErrorMsgTemplate{
 	ErrGetPublicKeyRequest: {
 		Msg:    "获取公钥请求参数错误",
 		Detail: "获取公钥请求参数错误(%s)",
+	},
+	ErrGetPublicKey: {
+		Msg:    "获取公钥失败",
+		Detail: "获取公钥失败(%s)",
 	},
 }

@@ -22,12 +22,31 @@ func NewMySQLUserRepository(db *gorm.DB) UserRepository {
 }
 
 func (r *MySQLUserRepository) Create(ctx context.Context, user *model.User) error {
+	exist, err := r.checkUserExist(ctx, user.OpenID)
+	if err != nil {
+		return err
+	}
+	if exist {
+		return nil
+	}
 	return r.db.WithContext(ctx).Create(user).Error
+}
+
+func (r *MySQLUserRepository) checkUserExist(ctx context.Context, OpenID string) (bool, error) {
+	var count int64
+	err := r.db.WithContext(ctx).Model(&model.User{}).Where("open_id = ?", OpenID).Count(&count).Error
+	if err == gorm.ErrRecordNotFound {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }
 
 func (r *MySQLUserRepository) GetByWechatOpenID(ctx context.Context, wechatOpenID string) (*model.User, error) {
 	var user model.User
-	err := r.db.WithContext(ctx).Where("wechat_open_id = ?", wechatOpenID).First(&user).Error
+	err := r.db.WithContext(ctx).Where("open_id = ?", wechatOpenID).First(&user).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, nil

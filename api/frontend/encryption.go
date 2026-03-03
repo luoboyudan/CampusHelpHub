@@ -6,6 +6,7 @@ import (
 	"campushelphub/internal/errors"
 	"campushelphub/internal/log"
 	"campushelphub/model"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -32,6 +33,13 @@ func (e *EncryptionHandler) GetPublicKey(ctx *gin.Context) {
 		BusinessType: common.BusinessTypeGetPublicKey,
 		ClientIP:     ctx.ClientIP(),
 	}
-	res.PublicKey = e.RSA.GetPublicKey()
+	var err error
+	res.PublicKey, err = e.RSA.GetPublicKey()
+	if err != nil {
+		logInfo.Status = common.FailStatus
+		e.ErrorResponse(ctx, logInfo, e.Error.NewError(errors.ErrGetPublicKey, http.StatusInternalServerError, err))
+		return
+	}
+	logInfo.Status = common.SuccessStatus
 	e.SuccessResponse(ctx, logInfo, res)
 }

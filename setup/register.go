@@ -33,7 +33,7 @@ func SetupUserRouter(routerGroup *gin.RouterGroup, handlerSet *handlerset.Handle
 	}
 	authGroup := routerGroup.Group("/user-auth", middleware.AuthMiddleware(tokenManager, logger))
 	{
-		authGroup.POST("/verfify", handlerSet.UserHandler.VerifyUser)
+		authGroup.POST("/verify", handlerSet.UserHandler.VerifyUser)
 	}
 
 }
