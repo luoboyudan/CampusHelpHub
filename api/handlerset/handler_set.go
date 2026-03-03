@@ -5,11 +5,13 @@ import (
 )
 
 type HandlerSet struct {
-	UserHandler *frontend.UserHandler
+	UserHandler       *frontend.UserHandler
+	EncryptionHandler *frontend.EncryptionHandler
 }
 
-func NewHandlerSet(userHandler *frontend.UserHandler) *HandlerSet {
+func NewHandlerSet(userHandler *frontend.UserHandler, encryptionHandler *frontend.EncryptionHandler) *HandlerSet {
 	return &HandlerSet{
-		UserHandler: userHandler,
+		UserHandler:       userHandler,
+		EncryptionHandler: encryptionHandler,
 	}
 }

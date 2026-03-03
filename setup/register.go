@@ -20,6 +20,7 @@ func SetupRouter(app *gin.Engine, handlerSet *handlerset.HandlerSet, tokenManage
 	v1 := app.Group("/v1")
 	{
 		SetupUserRouter(v1, handlerSet, tokenManager)
+		SetupEncryptionRouter(v1, handlerSet)
 	}
 }
 
@@ -27,5 +28,12 @@ func SetupUserRouter(routerGroup *gin.RouterGroup, handlerSet *handlerset.Handle
 	looseGroup := routerGroup.Group("/user")
 	{
 		looseGroup.POST("/register", handlerSet.UserHandler.CreateUser)
+	}
+}
+
+func SetupEncryptionRouter(routerGroup *gin.RouterGroup, handlerSet *handlerset.HandlerSet) {
+	looseGroup := routerGroup.Group("/encryption")
+	{
+		looseGroup.GET("/public-key", handlerSet.EncryptionHandler.GetPublicKey)
 	}
 }

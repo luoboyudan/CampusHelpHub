@@ -38,7 +38,8 @@ func InitializeApp() *App {
 	chromeService := service.NewChromeService(configConfig, errorsError)
 	rsa := RSA.NewRSA(configConfig)
 	userHandler := frontend.NewUserHandler(handler, userService, wechatService, tokenManager, chromeService, rsa)
-	handlerSet := handlerset.NewHandlerSet(userHandler)
+	encryptionHandler := frontend.NewEncryptionHandler(handler, errorsError, logger, rsa)
+	handlerSet := handlerset.NewHandlerSet(userHandler, encryptionHandler)
 	engine := NewEngine(handlerSet, tokenManager)
 	app := NewApp(engine, configConfig, db)
 	return app
@@ -66,7 +67,7 @@ var LoggerSet = wire.NewSet(log.NewLogger)
 
 var HandlerSet = wire.NewSet(handlerset.NewHandlerSet)
 
-var FrontendHandlerSet = wire.NewSet(frontend.NewUserHandler)
+var FrontendHandlerSet = wire.NewSet(frontend.NewUserHandler, frontend.NewEncryptionHandler)
 
 var EngineSet = wire.NewSet(
 	NewEngine,

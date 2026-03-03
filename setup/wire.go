@@ -63,6 +63,7 @@ var HandlerSet = wire.NewSet(
 
 var FrontendHandlerSet = wire.NewSet(
 	frontend.NewUserHandler,
+	frontend.NewEncryptionHandler,
 )
 
 var EngineSet = wire.NewSet(
