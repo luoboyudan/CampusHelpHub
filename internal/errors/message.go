@@ -17,6 +17,8 @@ const (
 	ErrGetPublicKey                  = "ErrGetPublicKey"
 	ErrUserCheckRequest              = "ErrUserCheckRequest"
 	ErrUserLoginRequest              = "ErrUserLoginRequest"
+	ErrCreateCompetitionRequest      = "ErrCreateCompetitionRequest"
+	ErrCreateCompetitionDB           = "ErrCreateCompetitionDB"
 )
 
 type ErrorMsgTemplate struct {
@@ -88,5 +90,13 @@ var ErrorMsgTemplates = map[string]ErrorMsgTemplate{
 	ErrUserLoginRequest: {
 		Msg:    "登录用户请求参数错误",
 		Detail: "登录用户请求参数错误(%s)",
+	},
+	ErrCreateCompetitionRequest: {
+		Msg:    "创建竞赛请求参数错误",
+		Detail: "创建竞赛请求参数错误(%s)",
+	},
+	ErrCreateCompetitionDB: {
+		Msg:    "创建竞赛失败",
+		Detail: "创建竞赛失败(%s)",
 	},
 }

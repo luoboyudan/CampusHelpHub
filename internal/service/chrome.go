@@ -123,3 +123,10 @@ func (s *ChromeService) VerifyStudent(verify *model.ChromeStudentVerify) *errors
 		}
 	}
 }
+
+func (s *ChromeService) Stop() {
+	// 确保在使用后停止服务，避免资源泄漏
+	if s.service != nil {
+		s.service.Stop()
+	}
+}

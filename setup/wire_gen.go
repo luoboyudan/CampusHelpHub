@@ -7,6 +7,7 @@
 package setup
 
 import (
+	"campushelphub/api/admin"
 	"campushelphub/api/common"
 	"campushelphub/api/frontend"
 	"campushelphub/api/handlerset"
@@ -38,8 +39,12 @@ func InitializeApp() *App {
 	rsa := RSA.NewRSA(configConfig)
 	userHandler := frontend.NewUserHandler(handler, userService, wechatService, tokenManager, chromeService, rsa)
 	encryptionHandler := frontend.NewEncryptionHandler(handler, errorsError, logger, rsa)
-	handlerSet := handlerset.NewHandlerSet(userHandler, encryptionHandler)
-	engine := NewEngine(handlerSet, tokenManager, logger)
+	competitionRepository := repository.NewMySQLCompetitionRepository(db)
+	competitionService := service.NewCompetitionService(errorsError, competitionRepository)
+	competitionHandler := admin.NewCompetitionHandler(handler, errorsError, logger, competitionService)
+	frontendCompetitionHandler := frontend.NewCompetitionHandler(handler, competitionService, errorsError, logger)
+	handlerSet := handlerset.NewHandlerSet(userHandler, encryptionHandler, competitionHandler, frontendCompetitionHandler)
+	engine := NewEngine(handlerSet, tokenManager, logger, chromeService)
 	app := NewApp(engine, configConfig, db)
 	return app
 }
@@ -56,9 +61,9 @@ var TokenManagerSet = wire.NewSet(auth.NewTokenManager)
 
 var RSASet = wire.NewSet(RSA.NewRSA)
 
-var RepositorySet = wire.NewSet(repository.NewMySQLUserRepository)
+var RepositorySet = wire.NewSet(repository.NewMySQLUserRepository, repository.NewMySQLCompetitionRepository)
 
-var ServiceSet = wire.NewSet(service.NewUserService, service.NewChromeService, service.NewWechatService)
+var ServiceSet = wire.NewSet(service.NewUserService, service.NewChromeService, service.NewWechatService, service.NewCompetitionService)
 
 var BaseHandlerSet = wire.NewSet(common.NewHandler)
 
@@ -66,7 +71,9 @@ var LoggerSet = wire.NewSet(log.NewLogger)
 
 var HandlerSet = wire.NewSet(handlerset.NewHandlerSet)
 
-var FrontendHandlerSet = wire.NewSet(frontend.NewUserHandler, frontend.NewEncryptionHandler)
+var FrontendHandlerSet = wire.NewSet(frontend.NewUserHandler, frontend.NewEncryptionHandler, frontend.NewCompetitionHandler)
+
+var AdminHandlerSet = wire.NewSet(admin.NewCompetitionHandler)
 
 var EngineSet = wire.NewSet(
 	NewEngine,

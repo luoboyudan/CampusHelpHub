@@ -23,7 +23,7 @@ func (User) TableName() string {
 }
 
 type CheckUserRequest struct {
-	OpenID string `json:"openid" binding:"required"`
+	Code string `json:"code" binding:"required"`
 }
 
 type CheckUserResponse struct {

@@ -4,6 +4,7 @@
 package setup
 
 import (
+	"campushelphub/api/admin"
 	handlerCommon "campushelphub/api/common"
 	"campushelphub/api/frontend"
 	"campushelphub/api/handlerset"
@@ -41,12 +42,14 @@ var RSASet = wire.NewSet(
 
 var RepositorySet = wire.NewSet(
 	repository.NewMySQLUserRepository,
+	repository.NewMySQLCompetitionRepository,
 )
 
 var ServiceSet = wire.NewSet(
 	service.NewUserService,
 	service.NewChromeService,
 	service.NewWechatService,
+	service.NewCompetitionService,
 )
 
 var BaseHandlerSet = wire.NewSet(
@@ -64,6 +67,11 @@ var HandlerSet = wire.NewSet(
 var FrontendHandlerSet = wire.NewSet(
 	frontend.NewUserHandler,
 	frontend.NewEncryptionHandler,
+	frontend.NewCompetitionHandler,
+)
+
+var AdminHandlerSet = wire.NewSet(
+	admin.NewCompetitionHandler,
 )
 
 var EngineSet = wire.NewSet(
@@ -87,6 +95,7 @@ func InitializeApp() *App {
 		ServiceSet,
 		BaseHandlerSet,
 		FrontendHandlerSet,
+		AdminHandlerSet,
 		HandlerSet,
 		TokenManagerSet,
 		RSASet,

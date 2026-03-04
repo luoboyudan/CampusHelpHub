@@ -21,8 +21,8 @@ func NewUserService(userRepo repository.UserRepository, idGen snowflake.IDgenara
 	return &UserService{userRepo: userRepo, IDGen: idGen, TokenManager: tokenManager}
 }
 
-func (s *UserService) CheckUser(ctx context.Context, req *model.CheckUserRequest) (bool, *errors.Error) {
-	exist, err := s.userRepo.CheckUserExist(ctx, req.OpenID)
+func (s *UserService) CheckUser(ctx context.Context, openid string) (bool, *errors.Error) {
+	exist, err := s.userRepo.CheckUserExist(ctx, openid)
 	if err != nil {
 		return false, s.errs.NewError(errors.ErrUserCheckRequest, http.StatusInternalServerError, err)
 	}

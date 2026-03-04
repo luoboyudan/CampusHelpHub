@@ -3,17 +3,16 @@ package setup
 import (
 	"campushelphub/internal/config"
 
-	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
 type App struct {
-	Engine *gin.Engine
+	Engine *Engine
 	Config *config.Config
 	DB     *gorm.DB
 }
 
-func NewApp(engine *gin.Engine, cfg *config.Config, db *gorm.DB) *App {
+func NewApp(engine *Engine, cfg *config.Config, db *gorm.DB) *App {
 	return &App{
 		Engine: engine,
 		Config: cfg,
@@ -22,5 +21,9 @@ func NewApp(engine *gin.Engine, cfg *config.Config, db *gorm.DB) *App {
 }
 
 func (a *App) Run() {
-	a.Engine.Run(a.Config.Server.Addr)
+	a.Engine.Engine.Run(a.Config.Server.Addr)
+}
+
+func (a *App) Stop() {
+	a.Engine.ChromeService.Stop()
 }

@@ -46,8 +46,9 @@ func (h *UserHandler) CheckUser(ctx *gin.Context) {
 		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrUserCheckRequest, http.StatusBadRequest, err))
 		return
 	}
+	sessionResp, err := h.WechatService.Login(req.Code)
 	// 检查用户是否存在
-	exist, err := h.UserService.CheckUser(ctx, &req)
+	exist, err := h.UserService.CheckUser(ctx, sessionResp.OpenID)
 	if err != nil {
 		logInfo.Status = common.FailStatus
 		h.ErrorResponse(ctx, logInfo, err)
