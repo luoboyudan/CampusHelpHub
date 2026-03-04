@@ -119,7 +119,7 @@ func (s *ChromeService) VerifyStudent(verify *model.ChromeStudentVerify) *errors
 		if strings.Contains(currentURL, "/"+s.config.ChromeVerify.VerifySign) {
 			return nil
 		} else {
-			return s.errs.NewError(errors.ErrChromeVerifyFailed, http.StatusInternalServerError, nil)
+			return s.errs.NewError(errors.ErrChromeVerifyFailed, http.StatusUnauthorized, nil)
 		}
 	}
 }

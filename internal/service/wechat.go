@@ -5,6 +5,7 @@ import (
 	"campushelphub/internal/errors"
 	"campushelphub/model"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -45,7 +46,7 @@ func (s *WechatService) Login(code string) (*model.SessionResponse, *errors.Erro
 		return nil, newError
 	}
 	if sessionResp.ErrCode != 0 {
-		newError := s.errs.NewError(errors.ErrWechatLoginSession, http.StatusInternalServerError, nil)
+		newError := s.errs.NewError(errors.ErrWechatLoginSession, http.StatusInternalServerError, fmt.Errorf("%s", sessionResp.ErrMsg))
 		return nil, newError
 	}
 	return &sessionResp, nil

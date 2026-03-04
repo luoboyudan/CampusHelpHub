@@ -115,6 +115,11 @@ func (h *UserHandler) LoginUser(ctx *gin.Context) {
 	}
 	// 登录用户
 	sessionResp, err := h.WechatService.Login(req.Code)
+	if err != nil {
+		logInfo.Status = common.FailStatus
+		h.ErrorResponse(ctx, logInfo, err)
+		return
+	}
 	user, err := h.UserService.Login(ctx, sessionResp)
 	if err != nil {
 		logInfo.Status = common.FailStatus
