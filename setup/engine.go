@@ -29,6 +29,8 @@ func setupRouter(app *Engine, handlerSet *handlerset.HandlerSet, tokenManager *a
 	{
 		setupUserRouter(v1, handlerSet, tokenManager, logger)
 		setupEncryptionRouter(v1, handlerSet)
+		setupCompetitionRouter(v1, handlerSet)
+		setupCategoryRouter(v1, handlerSet)
 	}
 }
 

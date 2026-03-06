@@ -2,3 +2,7 @@ Starting ChromeDriver 145.0.7632.116 (7d28075c6a9ba147e6df449209001258bb82a122-r
 Only local connections are allowed.
 Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
 ChromeDriver was started successfully on port 9515.
+Starting ChromeDriver 145.0.7632.116 (7d28075c6a9ba147e6df449209001258bb82a122-refs/branch-heads/7632@{#3100}) on port 9515
+Only local connections are allowed.
+Please see https://chromedriver.chromium.org/security-considerations for suggestions on keeping ChromeDriver safe.
+ChromeDriver was started successfully on port 9515.
