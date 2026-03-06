@@ -13,7 +13,7 @@ type Competition struct {
 	StartTime   string `json:"starttime" gorm:"type:varchar(255);not null;"`
 	Website     string `json:"website" gorm:"type:varchar(255);not null;"`
 	Experience  string `json:"experience" gorm:"type:varchar(255);not null;"`
-	CategoryID  uint   `json:"categoryid" gorm:"type:int;not null;"`
+	CategoryID  uint   `json:"category_id" gorm:"type:int;not null;"`
 }
 
 func (Competition) TableName() string {
@@ -33,7 +33,7 @@ type CompetitionWithCategory struct {
 	Title        string `json:"title" gorm:"type:varchar(255);not null;"`
 	EnrollTime   string `json:"enrolltime" gorm:"type:varchar(255);not null;"`
 	StartTime    string `json:"starttime" gorm:"type:varchar(255);not null;"`
-	CategoryID   uint   `json:"categoryid"`
+	CategoryID   uint   `json:"category_id"`
 	CategoryName string `json:"categoryname"`
 }
 
@@ -46,6 +46,6 @@ type CompetitionNoCategory struct {
 
 type GetCompetitionResponse struct {
 	Competitions []CompetitionNoCategory `json:"competitions"`
-	CategoryID   uint                    `json:"categoryid"`
+	CategoryID   uint                    `json:"category_id"`
 	CategoryName string                  `json:"categoryname"`
 }

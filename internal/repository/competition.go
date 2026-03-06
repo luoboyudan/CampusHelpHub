@@ -37,8 +37,9 @@ func (r *MySQLCompetitionRepository) GetCompetitionByCategoryID(ctx context.Cont
 
 func (r *MySQLCompetitionRepository) GetCompetitions(ctx context.Context) ([]model.CompetitionWithCategory, error) {
 	var comps []model.CompetitionWithCategory
-	if err := r.db.WithContext(ctx).Select("competitions.*, category.name as category_name").Joins("JOIN category ON competitions.category_id = category.id").Find(&comps).Error; err != nil {
+	if err := r.db.WithContext(ctx).Table("competitions").Select("competitions.*, categories.name as category_name").Joins("JOIN categories ON competitions.category_id = categories.id").Find(&comps).Error; err != nil {
 		return nil, err
 	}
+
 	return comps, nil
 }
