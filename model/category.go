@@ -9,7 +9,7 @@ type Category struct {
 	gorm.Model
 	Name         string        `json:"name" gorm:"type:varchar(255);not null;"`
 	Description  string        `json:"description" gorm:"type:varchar(255);"`
-	Competitions []Competition `json:"competitions" gorm:"foreignKey:BlockID;references:ID;"`
+	Competitions []Competition `json:"competitions" gorm:"foreignKey:CategoryID;references:ID;"`
 }
 
 func (Category) TableName() string {

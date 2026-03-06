@@ -23,8 +23,8 @@ func (s *CompetitionService) CreateCompetition(ctx context.Context, competition 
 	return s.repo.CreateCompetition(ctx, &competition.Competition)
 }
 
-func (s *CompetitionService) GetCompetitionByBlockID(ctx context.Context, blockID uint64) ([]model.Competition, error) {
-	return s.repo.GetCompetitionByBlockID(ctx, blockID)
+func (s *CompetitionService) GetCompetitionByCategoryID(ctx context.Context, categoryID uint64) ([]model.Competition, error) {
+	return s.repo.GetCompetitionByCategoryID(ctx, categoryID)
 }
 
 func (s *CompetitionService) GetCompetitions(ctx context.Context) ([]model.GetCompetitionResponse, error) {
@@ -32,16 +32,16 @@ func (s *CompetitionService) GetCompetitions(ctx context.Context) ([]model.GetCo
 	if err != nil {
 		return nil, err
 	}
-	BlockMap := make(map[uint]*model.GetCompetitionResponse)
+	CategoryMap := make(map[uint]*model.GetCompetitionResponse)
 	for _, comp := range comps {
-		if BlockMap[comp.BlockID] == nil {
-			BlockMap[comp.BlockID] = &model.GetCompetitionResponse{
-				BlockID:      comp.BlockID,
-				BlockName:    comp.BlockName,
-				Competitions: []model.CompetitionNoBlock{},
+		if CategoryMap[comp.CategoryID] == nil {
+			CategoryMap[comp.CategoryID] = &model.GetCompetitionResponse{
+				CategoryID:   comp.CategoryID,
+				CategoryName: comp.CategoryName,
+				Competitions: []model.CompetitionNoCategory{},
 			}
 		} else {
-			BlockMap[comp.BlockID].Competitions = append(BlockMap[comp.BlockID].Competitions, model.CompetitionNoBlock{
+			CategoryMap[comp.CategoryID].Competitions = append(CategoryMap[comp.CategoryID].Competitions, model.CompetitionNoCategory{
 				ID:         comp.ID,
 				Title:      comp.Title,
 				EnrollTime: comp.EnrollTime,
@@ -50,8 +50,8 @@ func (s *CompetitionService) GetCompetitions(ctx context.Context) ([]model.GetCo
 		}
 	}
 	var res []model.GetCompetitionResponse
-	for _, block := range BlockMap {
-		res = append(res, *block)
+	for _, category := range CategoryMap {
+		res = append(res, *category)
 	}
 	return res, nil
 }
