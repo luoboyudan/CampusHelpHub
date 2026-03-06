@@ -23,7 +23,6 @@ type CreateCategoryRequest struct {
 
 type CreateCategoryResponse struct {
 	Result bool `json:"result"`
-	ID     uint `json:"id"`
 }
 
 type GetAllCategoryResponse struct {

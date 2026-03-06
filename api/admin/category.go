@@ -37,6 +37,14 @@ func (h *CategoryHandler) CreateCategory(ctx *gin.Context) {
 		h.ErrorResponse(ctx, &logInfo, h.Error.NewError(errors.ErrCreateCategoryRequest, http.StatusBadRequest, err))
 		return
 	}
+	if err := h.Service.CreateCategory(ctx, &req); err != nil {
+		logInfo.Status = common.FailStatus
+		h.ErrorResponse(ctx, &logInfo, h.Error.NewError(errors.ErrCreateCategoryDB, http.StatusInternalServerError, err))
+		return
+	}
+	h.SuccessResponse(ctx, &logInfo, model.CreateCategoryResponse{
+		Result: true,
+	})
 }
 
 func (h *CategoryHandler) GetAllCategory(ctx *gin.Context) {

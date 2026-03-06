@@ -23,7 +23,10 @@ func NewMySQLCategoryRepository(db *gorm.DB) CategoryRepository {
 }
 
 func (r *MySQLCategoryRepository) CreateCategory(ctx context.Context, category *model.Category) error {
-	return r.db.WithContext(ctx).Create(category).Error
+	if err := r.db.WithContext(ctx).Create(category).Error; err != nil {
+		return err
+	}
+	return nil
 }
 
 func (r *MySQLCategoryRepository) GetAllCategory(ctx context.Context) ([]model.Category, error) {

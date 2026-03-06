@@ -20,6 +20,7 @@ const (
 	ErrCreateCompetitionRequest      = "ErrCreateCompetitionRequest"
 	ErrCreateCompetitionDB           = "ErrCreateCompetitionDB"
 	ErrCreateCategoryRequest         = "ErrCreateCategoryRequest"
+	ErrCreateCategoryDB              = "ErrCreateCategoryDB"
 	ErrGetAllCategoryDB              = "ErrGetAllCategoryDB"
 )
 
