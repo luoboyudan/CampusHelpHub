@@ -2,6 +2,10 @@ package setup
 
 import (
 	"campushelphub/internal/config"
+	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"gorm.io/gorm"
 )
@@ -21,9 +25,17 @@ func NewApp(engine *Engine, cfg *config.Config, db *gorm.DB) *App {
 }
 
 func (a *App) Run() {
+	signChan := make(chan os.Signal, 1)
+	signal.Notify(signChan, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	go func() {
+		sign := <-signChan
+		a.stop()
+		fmt.Println("程序退出,信号:", sign)
+		os.Exit(0)
+	}()
 	a.Engine.Engine.Run(a.Config.Server.Addr)
 }
 
-func (a *App) Stop() {
+func (a *App) stop() {
 	a.Engine.ChromeService.Stop()
 }
