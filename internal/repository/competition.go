@@ -40,6 +40,5 @@ func (r *MySQLCompetitionRepository) GetCompetitions(ctx context.Context) ([]mod
 	if err := r.db.WithContext(ctx).Table("competitions").Select("competitions.*, categories.name as category_name").Joins("JOIN categories ON competitions.category_id = categories.id").Find(&comps).Error; err != nil {
 		return nil, err
 	}
-
 	return comps, nil
 }

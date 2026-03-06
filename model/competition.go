@@ -13,7 +13,7 @@ type Competition struct {
 	StartTime   string `json:"starttime" gorm:"type:varchar(255);not null;"`
 	Website     string `json:"website" gorm:"type:varchar(255);not null;"`
 	Experience  string `json:"experience" gorm:"type:varchar(255);not null;"`
-	CategoryID  uint   `json:"category_id" gorm:"type:int;not null;"`
+	CategoryID  uint   `json:"category_id" gorm:"type:int;not null;foreignKey:CategoryID;references:ID;"`
 }
 
 func (Competition) TableName() string {

@@ -40,14 +40,13 @@ func (s *CompetitionService) GetCompetitions(ctx context.Context) ([]model.GetCo
 				CategoryName: comp.CategoryName,
 				Competitions: []model.CompetitionNoCategory{},
 			}
-		} else {
-			CategoryMap[comp.CategoryID].Competitions = append(CategoryMap[comp.CategoryID].Competitions, model.CompetitionNoCategory{
-				ID:         comp.ID,
-				Title:      comp.Title,
-				EnrollTime: comp.EnrollTime,
-				StartTime:  comp.StartTime,
-			})
 		}
+		CategoryMap[comp.CategoryID].Competitions = append(CategoryMap[comp.CategoryID].Competitions, model.CompetitionNoCategory{
+			ID:         comp.ID,
+			Title:      comp.Title,
+			EnrollTime: comp.EnrollTime,
+			StartTime:  comp.StartTime,
+		})
 	}
 	var res []model.GetCompetitionResponse
 	for _, category := range CategoryMap {

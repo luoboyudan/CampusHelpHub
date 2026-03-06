@@ -45,7 +45,7 @@ func InitializeApp() *App {
 	frontendCompetitionHandler := frontend.NewCompetitionHandler(handler, competitionService, errorsError, logger)
 	categoryRepository := repository.NewMySQLCategoryRepository(db)
 	categoryService := service.NewCategoryService(errorsError, categoryRepository)
-	categoryHandler := admin.NewCategoryHandler(categoryService, errorsError, logger)
+	categoryHandler := admin.NewCategoryHandler(handler, categoryService, errorsError, logger)
 	handlerSet := handlerset.NewHandlerSet(userHandler, encryptionHandler, competitionHandler, frontendCompetitionHandler, categoryHandler)
 	engine := NewEngine(handlerSet, tokenManager, logger, chromeService)
 	app := NewApp(engine, configConfig, db)
