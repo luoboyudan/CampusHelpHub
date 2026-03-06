@@ -43,7 +43,10 @@ func InitializeApp() *App {
 	competitionService := service.NewCompetitionService(errorsError, competitionRepository)
 	competitionHandler := admin.NewCompetitionHandler(handler, errorsError, logger, competitionService)
 	frontendCompetitionHandler := frontend.NewCompetitionHandler(handler, competitionService, errorsError, logger)
-	handlerSet := handlerset.NewHandlerSet(userHandler, encryptionHandler, competitionHandler, frontendCompetitionHandler)
+	categoryRepository := repository.NewMySQLCategoryRepository(db)
+	categoryService := service.NewCategoryService(errorsError, categoryRepository)
+	categoryHandler := admin.NewCategoryHandler(categoryService, errorsError, logger)
+	handlerSet := handlerset.NewHandlerSet(userHandler, encryptionHandler, competitionHandler, frontendCompetitionHandler, categoryHandler)
 	engine := NewEngine(handlerSet, tokenManager, logger, chromeService)
 	app := NewApp(engine, configConfig, db)
 	return app
@@ -61,9 +64,9 @@ var TokenManagerSet = wire.NewSet(auth.NewTokenManager)
 
 var RSASet = wire.NewSet(RSA.NewRSA)
 
-var RepositorySet = wire.NewSet(repository.NewMySQLUserRepository, repository.NewMySQLCompetitionRepository)
+var RepositorySet = wire.NewSet(repository.NewMySQLUserRepository, repository.NewMySQLCompetitionRepository, repository.NewMySQLCategoryRepository)
 
-var ServiceSet = wire.NewSet(service.NewUserService, service.NewChromeService, service.NewWechatService, service.NewCompetitionService)
+var ServiceSet = wire.NewSet(service.NewUserService, service.NewChromeService, service.NewWechatService, service.NewCompetitionService, service.NewCategoryService)
 
 var BaseHandlerSet = wire.NewSet(common.NewHandler)
 
@@ -73,7 +76,7 @@ var HandlerSet = wire.NewSet(handlerset.NewHandlerSet)
 
 var FrontendHandlerSet = wire.NewSet(frontend.NewUserHandler, frontend.NewEncryptionHandler, frontend.NewCompetitionHandler)
 
-var AdminHandlerSet = wire.NewSet(admin.NewCompetitionHandler)
+var AdminHandlerSet = wire.NewSet(admin.NewCompetitionHandler, admin.NewCategoryHandler)
 
 var EngineSet = wire.NewSet(
 	NewEngine,

@@ -19,6 +19,8 @@ const (
 	ErrUserLoginRequest              = "ErrUserLoginRequest"
 	ErrCreateCompetitionRequest      = "ErrCreateCompetitionRequest"
 	ErrCreateCompetitionDB           = "ErrCreateCompetitionDB"
+	ErrCreateCategoryRequest         = "ErrCreateCategoryRequest"
+	ErrGetAllCategoryDB              = "ErrGetAllCategoryDB"
 )
 
 type ErrorMsgTemplate struct {
@@ -98,5 +100,13 @@ var ErrorMsgTemplates = map[string]ErrorMsgTemplate{
 	ErrCreateCompetitionDB: {
 		Msg:    "创建竞赛失败",
 		Detail: "创建竞赛失败(%s)",
+	},
+	ErrCreateCategoryRequest: {
+		Msg:    "创建分类请求参数错误",
+		Detail: "创建分类请求参数错误(%s)",
+	},
+	ErrGetAllCategoryDB: {
+		Msg:    "获取所有分类失败",
+		Detail: "获取所有分类失败(%s)",
 	},
 }

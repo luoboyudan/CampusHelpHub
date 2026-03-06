@@ -44,5 +44,7 @@ func (h *CompetitionHandler) CreateCompetition(ctx *gin.Context) {
 		return
 	}
 	logInfo.Status = common.SuccessStatus
-	h.SuccessResponse(ctx, logInfo, nil)
+	h.SuccessResponse(ctx, logInfo, model.CreateCompetitionResponse{
+		Result: true,
+	})
 }

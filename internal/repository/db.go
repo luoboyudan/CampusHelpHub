@@ -15,6 +15,6 @@ func NewDB(cfg *config.Config) *gorm.DB {
 	if err != nil {
 		panic("failed to connect database")
 	}
-	db.AutoMigrate(&model.User{}, &model.Block{}, &model.Competition{})
+	db.AutoMigrate(&model.User{}, &model.Category{}, &model.Competition{})
 	return db
 }

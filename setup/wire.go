@@ -43,6 +43,7 @@ var RSASet = wire.NewSet(
 var RepositorySet = wire.NewSet(
 	repository.NewMySQLUserRepository,
 	repository.NewMySQLCompetitionRepository,
+	repository.NewMySQLCategoryRepository,
 )
 
 var ServiceSet = wire.NewSet(
@@ -50,6 +51,7 @@ var ServiceSet = wire.NewSet(
 	service.NewChromeService,
 	service.NewWechatService,
 	service.NewCompetitionService,
+	service.NewCategoryService,
 )
 
 var BaseHandlerSet = wire.NewSet(
@@ -72,6 +74,7 @@ var FrontendHandlerSet = wire.NewSet(
 
 var AdminHandlerSet = wire.NewSet(
 	admin.NewCompetitionHandler,
+	admin.NewCategoryHandler,
 )
 
 var EngineSet = wire.NewSet(

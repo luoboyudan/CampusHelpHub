@@ -11,4 +11,6 @@ const (
 	BusinessTypeUserCheck         = "user_check"
 	BusinessTypeUserLogin         = "user_login"
 	BusinessTypeCreateCompetition = "create_competition"
+	BusinessTypeCreateCategory    = "create_category"
+	BusinessTypeGetAllCategory    = "get_all_category"
 )

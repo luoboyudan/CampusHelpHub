@@ -62,3 +62,11 @@ func setupCompetitionRouter(routerGroup *gin.RouterGroup, handlerSet *handlerset
 		openGroup.GET("/", handlerSet.CompetitionHandlerFrontend.GetCompetition)
 	}
 }
+
+func setupCategoryRouter(routerGroup *gin.RouterGroup, handlerSet *handlerset.HandlerSet) {
+	adminGroup := routerGroup.Group("/category")
+	{
+		adminGroup.POST("/create", handlerSet.CategoryHandler.CreateCategory)
+		adminGroup.GET("/", handlerSet.CategoryHandler.GetAllCategory)
+	}
+}
