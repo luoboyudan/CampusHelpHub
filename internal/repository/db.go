@@ -16,12 +16,14 @@ func NewDB(cfg *config.Config) *gorm.DB {
 	if err != nil {
 		panic("failed to connect database")
 	}
+	//上线时注释掉
+	dropAllTables(db)
 	db.AutoMigrate(&model.User{}, &model.Category{}, &model.Competition{})
 	return db
 }
 
 // 测试用函数，用于删除数据库中所有表
-func DropAllTables(db *gorm.DB) error {
+func dropAllTables(db *gorm.DB) error {
 	if db == nil {
 		return fmt.Errorf("gorm.DB 对象不能为空")
 	}
