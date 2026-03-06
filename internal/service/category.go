@@ -27,6 +27,18 @@ func (s *CategoryService) CreateCategory(ctx context.Context, category *model.Cr
 	return s.repo.CreateCategory(ctx, c)
 }
 
-func (s *CategoryService) GetAllCategory(ctx context.Context) ([]model.Category, error) {
-	return s.repo.GetAllCategory(ctx)
+func (s *CategoryService) GetAllCategory(ctx context.Context) ([]model.CategoryWithNoCompetition, error) {
+	categories, err := s.repo.GetAllCategory(ctx)
+	if err != nil {
+		return nil, err
+	}
+	categoryWithNoCompetitionList := make([]model.CategoryWithNoCompetition, 0, len(categories))
+	for _, category := range categories {
+		categoryWithNoCompetitionList = append(categoryWithNoCompetitionList, model.CategoryWithNoCompetition{
+			ID:          category.ID,
+			Name:        category.Name,
+			Description: category.Description,
+		})
+	}
+	return categoryWithNoCompetitionList, nil
 }

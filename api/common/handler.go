@@ -19,8 +19,7 @@ func NewHandler(error *errors.Error, log *log.Logger) *Handler {
 
 func (h *Handler) ErrorResponse(ctx *gin.Context, logInfo *log.BusinessLogInfo, err *errors.Error) {
 	ctx.JSON(err.HTTPStatus, gin.H{
-		"error":  err.Error(),
-		"detail": err.Detail,
+		"error": err.Error(),
 	})
 	logInfo.Extra = map[string]interface{}{
 		"error": err.Error(),

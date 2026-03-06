@@ -25,6 +25,11 @@ type CreateCategoryResponse struct {
 	Result bool `json:"result"`
 }
 
+type CategoryWithNoCompetition struct {
+	ID          uint   `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+}
 type GetAllCategoryResponse struct {
-	Categories []Category `json:"categories"`
+	Categories []CategoryWithNoCompetition `json:"categories"`
 }
