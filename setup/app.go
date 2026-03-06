@@ -2,6 +2,7 @@ package setup
 
 import (
 	"campushelphub/internal/config"
+	"campushelphub/internal/repository"
 	"fmt"
 	"os"
 	"os/signal"
@@ -25,6 +26,8 @@ func NewApp(engine *Engine, cfg *config.Config, db *gorm.DB) *App {
 }
 
 func (a *App) Run() {
+	// 测试用：删除数据库中所有表，上线时请注释掉
+	repository.DropAllTables(a.DB)
 	signChan := make(chan os.Signal, 1)
 	signal.Notify(signChan, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 	go func() {
