@@ -13,10 +13,13 @@ import (
 	"campushelphub/api/handlerset"
 	"campushelphub/internal/common/RSA"
 	"campushelphub/internal/common/auth"
+	"campushelphub/internal/common/cache"
 	"campushelphub/internal/common/snowflake"
 	"campushelphub/internal/config"
 	"campushelphub/internal/errors"
 	"campushelphub/internal/log"
+	"campushelphub/internal/pkg/redis"
+	"campushelphub/internal/pkg/wechat"
 	"campushelphub/internal/repository"
 	"campushelphub/internal/service"
 	"github.com/google/wire"
@@ -34,7 +37,7 @@ func InitializeApp() *App {
 	iDgenarator := snowflake.NewSnowflakeIDGenerator(configConfig)
 	tokenManager := auth.NewTokenManager(configConfig)
 	userService := service.NewUserService(userRepository, iDgenarator, tokenManager)
-	wechatService := service.NewWechatService(configConfig, errorsError)
+	wechatService := wechat.NewWechatService(configConfig, errorsError)
 	chromeService := service.NewChromeService(configConfig, errorsError)
 	rsa := RSA.NewRSA(configConfig)
 	userHandler := frontend.NewUserHandler(handler, userService, wechatService, tokenManager, chromeService, rsa)
@@ -64,9 +67,11 @@ var TokenManagerSet = wire.NewSet(auth.NewTokenManager)
 
 var RSASet = wire.NewSet(RSA.NewRSA)
 
-var RepositorySet = wire.NewSet(repository.NewMySQLUserRepository, repository.NewMySQLCompetitionRepository, repository.NewMySQLCategoryRepository)
+var RepositorySet = wire.NewSet(repository.NewMySQLUserRepository, repository.NewMySQLCompetitionRepository, repository.NewMySQLCategoryRepository, repository.NewMySQLReminderRepository, repository.NewMySQLMessageRepository)
 
-var ServiceSet = wire.NewSet(service.NewUserService, service.NewChromeService, service.NewWechatService, service.NewCompetitionService, service.NewCategoryService)
+var CacheSet = wire.NewSet(cache.NewKeyBuilder)
+
+var ServiceSet = wire.NewSet(service.NewUserService, service.NewChromeService, wechat.NewWechatService, redis.NewRedisService, service.NewCompetitionService, service.NewCategoryService, service.NewTaskService, service.NewReminderService, service.NewMessageService)
 
 var BaseHandlerSet = wire.NewSet(common.NewHandler)
 

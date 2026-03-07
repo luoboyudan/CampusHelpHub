@@ -10,7 +10,8 @@ import (
 type CompetitionRepository interface {
 	CreateCompetition(ctx context.Context, competition *model.Competition) error
 	GetCompetitionByCategoryID(ctx context.Context, categoryID uint64) ([]model.Competition, error)
-	GetCompetitions(ctx context.Context) ([]model.CompetitionWithCategory, error)
+	GetCompetitionList(ctx context.Context) ([]model.CompetitionWithCategory, error)
+	GetCompetition(ctx context.Context, competitionID uint64) (*model.Competition, error)
 }
 
 type MySQLCompetitionRepository struct {
@@ -35,10 +36,18 @@ func (r *MySQLCompetitionRepository) GetCompetitionByCategoryID(ctx context.Cont
 	return competitions, nil
 }
 
-func (r *MySQLCompetitionRepository) GetCompetitions(ctx context.Context) ([]model.CompetitionWithCategory, error) {
+func (r *MySQLCompetitionRepository) GetCompetitionList(ctx context.Context) ([]model.CompetitionWithCategory, error) {
 	var comps []model.CompetitionWithCategory
 	if err := r.db.WithContext(ctx).Table("competitions").Select("competitions.*, categories.name as category_name").Joins("JOIN categories ON competitions.category_id = categories.id").Find(&comps).Error; err != nil {
 		return nil, err
 	}
 	return comps, nil
+}
+
+func (r *MySQLCompetitionRepository) GetCompetition(ctx context.Context, competitionID uint64) (*model.Competition, error) {
+	var competition model.Competition
+	if err := r.db.WithContext(ctx).Where("id = ?", competitionID).First(&competition).Error; err != nil {
+		return nil, err
+	}
+	return &competition, nil
 }

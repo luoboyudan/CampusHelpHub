@@ -27,8 +27,8 @@ func (s *CompetitionService) GetCompetitionByCategoryID(ctx context.Context, cat
 	return s.repo.GetCompetitionByCategoryID(ctx, categoryID)
 }
 
-func (s *CompetitionService) GetCompetitions(ctx context.Context) ([]model.GetCompetitionResponse, error) {
-	comps, err := s.repo.GetCompetitions(ctx)
+func (s *CompetitionService) GetCompetitionsList(ctx context.Context) ([]model.GetCompetitionResponse, error) {
+	comps, err := s.repo.GetCompetitionList(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -42,10 +42,8 @@ func (s *CompetitionService) GetCompetitions(ctx context.Context) ([]model.GetCo
 			}
 		}
 		CategoryMap[comp.CategoryID].Competitions = append(CategoryMap[comp.CategoryID].Competitions, model.CompetitionNoCategory{
-			ID:         comp.ID,
-			Title:      comp.Title,
-			EnrollTime: comp.EnrollTime,
-			StartTime:  comp.StartTime,
+			ID:    comp.ID,
+			Title: comp.Title,
 		})
 	}
 	var res []model.GetCompetitionResponse
@@ -53,4 +51,8 @@ func (s *CompetitionService) GetCompetitions(ctx context.Context) ([]model.GetCo
 		res = append(res, *category)
 	}
 	return res, nil
+}
+
+func (s *CompetitionService) GetCompetition(ctx context.Context, competitionID uint64) (*model.Competition, error) {
+	return s.repo.GetCompetition(ctx, competitionID)
 }

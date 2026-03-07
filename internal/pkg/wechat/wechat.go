@@ -1,9 +1,8 @@
-package service
+package wechat
 
 import (
 	"campushelphub/internal/config"
 	"campushelphub/internal/errors"
-	"campushelphub/model"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -20,7 +19,7 @@ func NewWechatService(config *config.Config, errs *errors.Error) *WechatService 
 	return &WechatService{config: config, errs: errs}
 }
 
-func (s *WechatService) Login(code string) (*model.SessionResponse, *errors.Error) {
+func (s *WechatService) Login(code string) (*SessionResponse, *errors.Error) {
 	params := map[string][]string{
 		"appid":      {s.config.Wechat.AppID},
 		"secret":     {s.config.Wechat.AppSecret},
@@ -39,7 +38,7 @@ func (s *WechatService) Login(code string) (*model.SessionResponse, *errors.Erro
 		newError := s.errs.NewError(errors.ErrWechatLoginSession, http.StatusInternalServerError, err)
 		return nil, newError
 	}
-	var sessionResp model.SessionResponse
+	var sessionResp SessionResponse
 	err = json.Unmarshal(body, &sessionResp)
 	if err != nil {
 		newError := s.errs.NewError(errors.ErrWechatLoginSession, http.StatusInternalServerError, err)
@@ -50,4 +49,8 @@ func (s *WechatService) Login(code string) (*model.SessionResponse, *errors.Erro
 		return nil, newError
 	}
 	return &sessionResp, nil
+}
+
+func (s *WechatService) SendReminder(reminder *WechatReminder) error {
+	return nil
 }

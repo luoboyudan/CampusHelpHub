@@ -20,6 +20,20 @@ database:
   dbname: "campushelphub"
 server:
   addr: ":8080"
+redis:
+  host: "localhost"
+  port: 6379
+  password: ""
+  db: 0
+  prefix: "campushelphub"
+  poolSize: 20
+  MinIdleConns: 5
+  MaxRetries: 3
+  DialTimeout: 5
+  ReadTimeout: 3
+  WriteTimeout: 3
+task:
+  reminderTime: "0 9 * * *"
 machineID: 0
 token:
   secretKey: "your_secret_key"

@@ -35,7 +35,7 @@ func (h *CompetitionHandler) CreateCompetition(ctx *gin.Context) {
 	}
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		logInfo.Status = common.FailStatus
-		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrCreateCompetitionRequest, http.StatusBadRequest, err))
+		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrBadRequest, http.StatusBadRequest, err))
 		return
 	}
 	if err := h.Service.CreateCompetition(ctx, &req); err != nil {

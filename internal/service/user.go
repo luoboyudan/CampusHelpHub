@@ -4,6 +4,7 @@ import (
 	"campushelphub/internal/common/auth"
 	"campushelphub/internal/common/snowflake"
 	"campushelphub/internal/errors"
+	"campushelphub/internal/pkg/wechat"
 	"campushelphub/internal/repository"
 	"campushelphub/model"
 	"context"
@@ -29,7 +30,7 @@ func (s *UserService) CheckUser(ctx context.Context, openid string) (bool, *erro
 	return exist, nil
 }
 
-func (s *UserService) Login(ctx context.Context, sessionResp *model.SessionResponse) (*model.User, *errors.Error) {
+func (s *UserService) Login(ctx context.Context, sessionResp *wechat.SessionResponse) (*model.User, *errors.Error) {
 	user, err := s.userRepo.GetByWechatOpenID(ctx, sessionResp.OpenID)
 	if err != nil {
 		return nil, s.errs.NewError(errors.ErrUserLoginRequest, http.StatusInternalServerError, err)
@@ -37,7 +38,7 @@ func (s *UserService) Login(ctx context.Context, sessionResp *model.SessionRespo
 	return user, nil
 }
 
-func (s *UserService) Create(ctx context.Context, req *model.CreateUserRequest, sessionResp *model.SessionResponse) (*model.User, *errors.Error) {
+func (s *UserService) Create(ctx context.Context, req *model.CreateUserRequest, sessionResp *wechat.SessionResponse) (*model.User, *errors.Error) {
 	user := &model.User{
 		ID:       s.IDGen.GenerateID(),
 		OpenID:   sessionResp.OpenID,

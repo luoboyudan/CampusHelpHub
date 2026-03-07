@@ -42,6 +42,22 @@ type Config struct {
 	Server struct {
 		Addr string `yaml:"addr"`
 	} `yaml:"server"`
+	Task struct {
+		ReminderTime string `yaml:"reminderTime"`
+	} `yaml:"task"`
+	Redis struct {
+		Host         string `yaml:"host"`
+		Port         int    `yaml:"port"`
+		Password     string `yaml:"password"`
+		DB           int    `yaml:"db"`
+		PoolSize     int    `yaml:"poolSize"`
+		MinIdleConns int    `yaml:"MinIdleConns"`
+		MaxRetries   int    `yaml:"MaxRetries"`
+		DialTimeout  int    `yaml:"DialTimeout"`
+		ReadTimeout  int    `yaml:"ReadTimeout"`
+		WriteTimeout int    `yaml:"WriteTimeout"`
+		Prefix       string `yaml:"prefix"`
+	} `yaml:"redis"`
 	MachineID int `yaml:"machineID"`
 	Token     struct {
 		SecretKey  string `yaml:"secretKey"`

@@ -10,10 +10,13 @@ import (
 	"campushelphub/api/handlerset"
 	RSA "campushelphub/internal/common/RSA"
 	"campushelphub/internal/common/auth"
+	"campushelphub/internal/common/cache"
 	"campushelphub/internal/common/snowflake"
 	"campushelphub/internal/config"
 	"campushelphub/internal/errors"
 	"campushelphub/internal/log"
+	"campushelphub/internal/pkg/redis"
+	"campushelphub/internal/pkg/wechat"
 	"campushelphub/internal/repository"
 	"campushelphub/internal/service"
 
@@ -44,14 +47,24 @@ var RepositorySet = wire.NewSet(
 	repository.NewMySQLUserRepository,
 	repository.NewMySQLCompetitionRepository,
 	repository.NewMySQLCategoryRepository,
+	repository.NewMySQLReminderRepository,
+	repository.NewMySQLMessageRepository,
+)
+
+var CacheSet = wire.NewSet(
+	cache.NewKeyBuilder,
 )
 
 var ServiceSet = wire.NewSet(
 	service.NewUserService,
 	service.NewChromeService,
-	service.NewWechatService,
+	wechat.NewWechatService,
+	redis.NewRedisService,
 	service.NewCompetitionService,
 	service.NewCategoryService,
+	service.NewTaskService,
+	service.NewReminderService,
+	service.NewMessageService,
 )
 
 var BaseHandlerSet = wire.NewSet(

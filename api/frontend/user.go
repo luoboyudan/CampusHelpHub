@@ -6,6 +6,7 @@ import (
 	"campushelphub/internal/common/auth"
 	"campushelphub/internal/errors"
 	"campushelphub/internal/log"
+	"campushelphub/internal/pkg/wechat"
 	"campushelphub/internal/service"
 	"campushelphub/model"
 	"net/http"
@@ -16,13 +17,13 @@ import (
 type UserHandler struct {
 	*common.Handler
 	UserService   *service.UserService
-	WechatService *service.WechatService
+	WechatService *wechat.WechatService
 	TokenManager  *auth.TokenManager
 	ChromeService *service.ChromeService
 	RSA           *RSA.RSA
 }
 
-func NewUserHandler(h *common.Handler, us *service.UserService, ws *service.WechatService, tm *auth.TokenManager, cs *service.ChromeService, rs *RSA.RSA) *UserHandler {
+func NewUserHandler(h *common.Handler, us *service.UserService, ws *wechat.WechatService, tm *auth.TokenManager, cs *service.ChromeService, rs *RSA.RSA) *UserHandler {
 	return &UserHandler{
 		Handler:       h,
 		UserService:   us,
@@ -43,7 +44,7 @@ func (h *UserHandler) CheckUser(ctx *gin.Context) {
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		logInfo.Status = common.FailStatus
-		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrUserCheckRequest, http.StatusBadRequest, err))
+		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrBadRequest, http.StatusBadRequest, err))
 		return
 	}
 	sessionResp, err := h.WechatService.Login(req.Code)
@@ -69,7 +70,7 @@ func (h *UserHandler) CreateUser(ctx *gin.Context) {
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		logInfo.Status = common.FailStatus
-		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrUserRegisterRequest, http.StatusBadRequest, err))
+		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrBadRequest, http.StatusBadRequest, err))
 		return
 	}
 
@@ -110,7 +111,7 @@ func (h *UserHandler) LoginUser(ctx *gin.Context) {
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		logInfo.Status = common.FailStatus
-		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrUserLoginRequest, http.StatusBadRequest, err))
+		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrBadRequest, http.StatusBadRequest, err))
 		return
 	}
 	// 登录用户
@@ -150,21 +151,21 @@ func (h *UserHandler) VerifyUser(ctx *gin.Context) {
 
 	if !ok {
 		logInfo.Status = common.FailStatus
-		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrUserVerifyRequest, http.StatusBadRequest, nil))
+		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrBadRequest, http.StatusBadRequest, nil))
 		return
 	}
 	req.UserID = uint64(userID.(float64))
 
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		logInfo.Status = common.FailStatus
-		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrUserVerifyRequest, http.StatusBadRequest, err))
+		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrBadRequest, http.StatusBadRequest, err))
 		return
 	}
 	//解密
 	password, err := h.RSA.Decrypt(req.RSAPassword)
 	if err != nil {
 		logInfo.Status = common.FailStatus
-		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrUserVerifyRequest, http.StatusBadRequest, err))
+		h.ErrorResponse(ctx, logInfo, h.Error.NewError(errors.ErrBadRequest, http.StatusBadRequest, err))
 		return
 	}
 	// 验证用户
