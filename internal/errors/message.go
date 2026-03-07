@@ -17,6 +17,7 @@ const (
 	ErrCreateCompetitionDB           = "ErrCreateCompetitionDB"
 	ErrCreateCategoryDB              = "ErrCreateCategoryDB"
 	ErrGetAllCategoryDB              = "ErrGetAllCategoryDB"
+	ErrParamEmpty                    = "ErrParamEmpty"
 )
 
 type ErrorMsgTemplate struct {
@@ -84,5 +85,9 @@ var ErrorMsgTemplates = map[string]ErrorMsgTemplate{
 	ErrUserCheckDB: {
 		Msg:    "检查用户数据库错误",
 		Detail: "检查用户数据库错误(%s)",
+	},
+	ErrParamEmpty: {
+		Msg:    "参数为空",
+		Detail: "参数为空(%s)",
 	},
 }

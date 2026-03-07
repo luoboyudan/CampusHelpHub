@@ -1,18 +1,36 @@
 package model
 
 import (
+	"database/sql/driver"
+	"encoding/json"
+
 	"gorm.io/gorm"
 )
 
 // 竞赛
 type Competition struct {
 	gorm.Model
-	Title       string                        `json:"title" gorm:"type:varchar(255);not null;"`
-	Description string                        `json:"description" gorm:"type:text;not null;"`
-	Editions    map[string]CompetitionEdition `json:"editions" gorm:"type:json;default:[]"`
-	Website     string                        `json:"website" gorm:"type:varchar(255);not null;"`
-	Experience  string                        `json:"experience" gorm:"type:varchar(255);not null;"`
-	CategoryID  uint                          `json:"category_id" gorm:"type:int;not null;foreignKey:CategoryID;references:ID;"`
+	Title       string              `json:"title" gorm:"type:varchar(255);not null;"`
+	Description string              `json:"description" gorm:"type:text;not null;"`
+	Editions    CompetitionEditions `json:"editions" gorm:"type:json;"`
+	Website     string              `json:"website" gorm:"type:varchar(255);not null;"`
+	Experience  string              `json:"experience" gorm:"type:varchar(255);not null;"`
+	CategoryID  uint                `json:"category_id" gorm:"type:int;not null;foreignKey:CategoryID;references:ID;"`
+}
+type CompetitionEditions []CompetitionEdition
+
+func (e CompetitionEditions) Value() (driver.Value, error) {
+	if len(e) == 0 {
+		return json.Marshal([]CompetitionEdition{})
+	}
+	return json.Marshal(e)
+}
+func (e *CompetitionEditions) Scan(value interface{}) error {
+	if value == nil {
+		*e = CompetitionEditions{}
+		return nil
+	}
+	return json.Unmarshal([]byte(value.([]uint8)), &e)
 }
 
 type CompetitionEdition struct {

@@ -2,10 +2,10 @@ package frontend
 
 import (
 	"campushelphub/api/common"
+	"campushelphub/internal/common/converter"
 	"campushelphub/internal/errors"
 	"campushelphub/internal/log"
 	"campushelphub/internal/service"
-	"campushelphub/model"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -47,14 +47,22 @@ func (h *CompetitionHandler) GetCompetition(c *gin.Context) {
 		BusinessType: common.BusinessTypeUserCheck,
 		ClientIP:     c.ClientIP(),
 	}
-	var req model.GetCompetitionRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
+	id := c.Param("id")
+	if id == "" {
+		logInfo.Status = common.FailStatus
+		h.ErrorResponse(c, logInfo, h.Error.NewError(errors.ErrBadRequest, http.StatusBadRequest, nil))
+		return
+	}
+	competitionID, err := converter.ToUint64(id)
+	if err != nil {
+		logInfo.Status = common.FailStatus
 		h.ErrorResponse(c, logInfo, h.Error.NewError(errors.ErrBadRequest, http.StatusBadRequest, err))
 		return
 	}
-	competition, err := h.CompetitionService.GetCompetition(c, uint64(req.ID))
+	competition, err := h.CompetitionService.GetCompetition(c, competitionID)
 	if err != nil {
 		logInfo.Status = common.FailStatus
+		h.ErrorResponse(c, logInfo, h.Error.NewError(errors.ErrBadRequest, http.StatusBadRequest, err))
 		return
 	}
 	logInfo.Status = common.SuccessStatus

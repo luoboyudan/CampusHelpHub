@@ -61,7 +61,8 @@ func setupCompetitionRouter(routerGroup *gin.RouterGroup, handlerSet *handlerset
 	}
 	openGroup := routerGroup.Group("/competition")
 	{
-		openGroup.GET("/", handlerSet.CompetitionHandlerFrontend.GetCompetition)
+		openGroup.GET("/", handlerSet.CompetitionHandlerFrontend.GetCompetitionList)
+		openGroup.GET("/:id", handlerSet.CompetitionHandlerFrontend.GetCompetition)
 	}
 }
 
