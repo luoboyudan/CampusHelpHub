@@ -25,7 +25,7 @@ func NewUserService(userRepo repository.UserRepository, idGen snowflake.IDgenara
 func (s *UserService) CheckUser(ctx context.Context, openid string) (bool, *errors.Error) {
 	exist, err := s.userRepo.CheckUserExist(ctx, openid)
 	if err != nil {
-		return false, s.errs.NewError(errors.ErrUserCheckRequest, http.StatusInternalServerError, err)
+		return false, s.errs.NewError(errors.ErrUserCheckDB, http.StatusInternalServerError, err)
 	}
 	return exist, nil
 }
@@ -33,7 +33,7 @@ func (s *UserService) CheckUser(ctx context.Context, openid string) (bool, *erro
 func (s *UserService) Login(ctx context.Context, sessionResp *wechat.SessionResponse) (*model.User, *errors.Error) {
 	user, err := s.userRepo.GetByWechatOpenID(ctx, sessionResp.OpenID)
 	if err != nil {
-		return nil, s.errs.NewError(errors.ErrUserLoginRequest, http.StatusInternalServerError, err)
+		return nil, s.errs.NewError(errors.ErrUserCheckDB, http.StatusInternalServerError, err)
 	}
 	return user, nil
 }
